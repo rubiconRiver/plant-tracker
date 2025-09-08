@@ -62,11 +62,12 @@ export default function NfcTagLinker({ plantId, plantName }: NfcTagLinkerProps) 
       setMessage('Hold your NFC tag near the phone...')
       
       try {
-        // @ts-ignore - NDEFReader not in TypeScript types yet
+        // @ts-expect-error - NDEFReader not in TypeScript types yet
         const ndef = new NDEFReader()
         await ndef.scan()
         
-        ndef.addEventListener('reading', ({ message }: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ndef.addEventListener('reading', ({ message }: { message: any }) => {
           // Extract URL from NFC tag
           for (const record of message.records) {
             if (record.recordType === 'url') {
