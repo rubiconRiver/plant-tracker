@@ -1,0 +1,59 @@
+// Production schema for PostgreSQL
+// Copy this to schema.prisma when deploying
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING") // For migrations
+}
+
+model Plant {
+  id                String   @id @default(cuid())
+  name              String
+  species           String?
+  location          String?   // Legacy text field
+  shelfId           String?
+  shelfRow          Int?
+  shelfColumn       Int?
+  plantedDate       DateTime
+  status            String   @default("seedling")
+  notes             String?
+  
+  // OpenFarm data
+  openFarmId        String?
+  openFarmData      String?  // JSON string with cached OpenFarm data
+  daysToGermination Int?
+  daysToHarvest     Int?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  shelf             Shelf?   @relation(fields: [shelfId], references: [id], onDelete: SetNull)
+  photos            Photo[]
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  url       String
+  blobUrl   String?  // Vercel Blob URL
+  takenAt   DateTime @default(now())
+  createdAt DateTime @default(now())
+  
+  plant     Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  plantId   String
+}
+
+model Shelf {
+  id          String   @id @default(cuid())
+  name        String
+  rows        Int
+  columnsPerRow Int    // Default columns per row for UI
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  plants      Plant[]
+}
