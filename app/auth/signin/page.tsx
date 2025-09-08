@@ -25,7 +25,7 @@ export default function SignIn() {
       } else {
         window.location.href = '/auth/verify-request'
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
@@ -68,7 +68,7 @@ export default function SignIn() {
         </form>
 
         <p className="mt-6 text-sm text-center text-gray-600">
-          We'll send you a sign-in link to your email address.
+          We&apos;ll send you a sign-in link to your email address.
         </p>
       </div>
     </div>

@@ -7,7 +7,7 @@ interface NFCUrlDisplayProps {
   plantName: string
 }
 
-export default function NFCUrlDisplay({ plantId, plantName }: NFCUrlDisplayProps) {
+export default function NFCUrlDisplay({ plantId }: NFCUrlDisplayProps) {
   const [copied, setCopied] = useState(false)
   
   // Get the current host URL (works for both localhost and IP access)
@@ -22,7 +22,7 @@ export default function NFCUrlDisplay({ plantId, plantName }: NFCUrlDisplayProps
       await navigator.clipboard.writeText(nfcUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch {
       // Fallback for older browsers or mobile
       const textArea = document.createElement('textarea')
       textArea.value = nfcUrl
@@ -34,7 +34,7 @@ export default function NFCUrlDisplay({ plantId, plantName }: NFCUrlDisplayProps
         document.execCommand('copy')
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
-      } catch (err) {
+      } catch {
         alert('Failed to copy URL')
       }
       document.body.removeChild(textArea)
@@ -68,7 +68,7 @@ export default function NFCUrlDisplay({ plantId, plantName }: NFCUrlDisplayProps
           </button>
         </div>
         <p className="text-xs text-gray-500 mt-3">
-          💡 Use apps like "NFC Tools" or "TagWriter" to write this URL to your NFC tag
+          💡 Use apps like &quot;NFC Tools&quot; or &quot;TagWriter&quot; to write this URL to your NFC tag
         </p>
       </div>
     </div>

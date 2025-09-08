@@ -51,7 +51,7 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
       } else {
         alert('Failed to update plant')
       }
-    } catch (error) {
+    } catch {
       alert('Error updating plant')
     } finally {
       setIsSubmitting(false)

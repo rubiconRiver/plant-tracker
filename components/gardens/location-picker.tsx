@@ -25,9 +25,9 @@ interface LocationPickerProps {
     column: number | null
   }) => void
   existingPlants?: Array<{
-    gardenId: string
-    gardenRow: number
-    gardenColumn: number
+    gardenId: string | null
+    gardenRow: number | null
+    gardenColumn: number | null
   }>
 }
 
@@ -62,6 +62,7 @@ export default function LocationPicker({
 
   useEffect(() => {
     loadGardens()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleGardenSelect = (garden: Garden) => {

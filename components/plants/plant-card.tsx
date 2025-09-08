@@ -4,7 +4,7 @@ import Image from 'next/image'
 interface Photo {
   id: string
   url: string
-  takenAt: string
+  takenAt: string | Date
 }
 
 interface Plant {
@@ -12,7 +12,7 @@ interface Plant {
   name: string
   species: string | null
   location: string | null
-  plantedDate: string
+  plantedDate: string | Date
   status: string
   photos?: Photo[]
 }

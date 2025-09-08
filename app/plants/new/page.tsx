@@ -19,7 +19,13 @@ export default function NewPlantPage() {
     row: number | null
     column: number | null
   }>({ gardenId: null, row: null, column: null })
-  const [existingPlants, setExistingPlants] = useState<any[]>([])
+  interface ExistingPlant {
+    id: string
+    gardenId: string | null
+    gardenRow: number | null
+    gardenColumn: number | null
+  }
+  const [existingPlants, setExistingPlants] = useState<ExistingPlant[]>([])
 
   // Load existing plants to show occupied positions
   useEffect(() => {
@@ -83,7 +89,7 @@ export default function NewPlantPage() {
       } else {
         alert('Failed to create plant')
       }
-    } catch (error) {
+    } catch {
       alert('Error creating plant')
     } finally {
       setIsSubmitting(false)
@@ -134,7 +140,7 @@ export default function NewPlantPage() {
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Plant Name/Nickname *
               <span className="text-xs text-gray-500 ml-2">
-                (e.g., "Basil #1" or "Kitchen Windowsill Basil")
+                (e.g., &quot;Basil #1&quot; or &quot;Kitchen Windowsill Basil&quot;)
               </span>
             </label>
             <input

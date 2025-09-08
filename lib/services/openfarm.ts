@@ -139,10 +139,10 @@ export class OpenFarmService {
       s.name?.toLowerCase().includes('germination') || 
       s.name?.toLowerCase().includes('sprouting')
     )
-    const harvestStage = stages.find(s => 
-      s.name?.toLowerCase().includes('harvest') ||
-      s.name?.toLowerCase().includes('maturity')
-    )
+    // const harvestStage = stages.find(s => 
+    //   s.name?.toLowerCase().includes('harvest') ||
+    //   s.name?.toLowerCase().includes('maturity')
+    // )
 
     // Calculate total days from stages
     const totalDays = stages.reduce((sum, stage) => sum + (stage.stage_length || 0), 0)

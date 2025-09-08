@@ -64,7 +64,7 @@ export default function GardenCreator({ onGardenCreated }: GardenCreatorProps) {
       } else {
         alert('Failed to create garden')
       }
-    } catch (error) {
+    } catch {
       alert('Error creating garden')
     } finally {
       setIsSubmitting(false)

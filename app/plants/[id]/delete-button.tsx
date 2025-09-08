@@ -29,7 +29,7 @@ export default function DeletePlantButton({ plantId, plantName }: DeletePlantBut
       } else {
         alert('Failed to delete plant')
       }
-    } catch (error) {
+    } catch {
       alert('Error deleting plant')
     } finally {
       setIsDeleting(false)
