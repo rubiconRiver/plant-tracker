@@ -1,16 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-
-// TODO: Add authentication and workspace filtering
-const DEFAULT_WORKSPACE_ID = 'default-workspace'
+import { auth } from '@/auth'
 
 export async function GET() {
   try {
-    console.log('Fetching gardens...')
-    // TODO: Get workspace from authenticated user
+    const session = await auth()
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Get user's workspace
+    const user = await db.user.findUnique({
+      where: { email: session.user.email },
+      include: {
+        workspaces: {
+          include: {
+            workspace: true
+          }
+        }
+      }
+    })
+
+    if (!user?.workspaces[0]) {
+      return NextResponse.json([])
+    }
+
+    const workspaceId = user.workspaces[0].workspace.id
+    console.log('Fetching gardens for workspace:', workspaceId)
+    
     const gardens = await db.garden.findMany({
       where: {
-        workspaceId: DEFAULT_WORKSPACE_ID
+        workspaceId
       },
       orderBy: { createdAt: 'desc' },
       include: {
@@ -33,6 +53,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth()
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const data = await request.json()
     console.log('Received garden creation request:', data)
     
@@ -48,13 +73,31 @@ export async function POST(request: NextRequest) {
       columnsPerRow: data.columnsPerRow
     })
     
-    // TODO: Get workspace from authenticated user
+    // Get user's workspace
+    const user = await db.user.findUnique({
+      where: { email: session.user.email },
+      include: {
+        workspaces: {
+          include: {
+            workspace: true
+          }
+        }
+      }
+    })
+
+    if (!user?.workspaces[0]) {
+      return NextResponse.json({ error: 'No workspace found' }, { status: 400 })
+    }
+
+    const workspaceId = user.workspaces[0].workspace.id
+    console.log('Creating garden in workspace:', workspaceId)
+    
     const garden = await db.garden.create({
       data: {
         name: data.name,
         rows: data.rows,
         columnsPerRow: data.columnsPerRow,
-        workspaceId: DEFAULT_WORKSPACE_ID
+        workspaceId
       }
     })
     
