@@ -120,6 +120,7 @@ model Plant {
   
   garden            Garden?  @relation(fields: [gardenId], references: [id], onDelete: SetNull)
   photos            Photo[]
+  nfcTags           NfcTag[]
 }
 
 model Photo {
@@ -130,4 +131,15 @@ model Photo {
   
   plant     Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
   plantId   String
+}
+
+model NfcTag {
+  id        String   @id @default(cuid())
+  uuid      String   @unique
+  plantId   String?  // Nullable so tags can be unassigned
+  label     String?  // Optional label like "Basil #1 Tag"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  plant     Plant?   @relation(fields: [plantId], references: [id], onDelete: SetNull)
 }

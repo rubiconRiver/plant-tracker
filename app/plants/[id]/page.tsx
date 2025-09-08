@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import DeletePlantButton from './delete-button'
 import PhotoCapture from '@/components/plants/photo-capture'
-import NFCUrlDisplay from '@/components/plants/nfc-url-display'
+import NfcTagLinker from '@/components/plants/nfc-tag-linker'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -151,8 +151,8 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
             </div>
           )}
 
-          {/* NFC Tag URL Section - At the very bottom */}
-          <NFCUrlDisplay plantId={id} plantName={plant.name} />
+          {/* NFC Tag Management - At the very bottom */}
+          <NfcTagLinker plantId={id} plantName={plant.name} />
         </div>
       </div>
     </div>
