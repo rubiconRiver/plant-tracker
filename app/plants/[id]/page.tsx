@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import DeletePlantButton from './delete-button'
 import PhotoCapture from '@/components/plants/photo-capture'
 import NfcTagLinker from '@/components/plants/nfc-tag-linker'
-import Timeline from '@/components/plants/timeline'
+import PlantJourney from '@/components/plants/plant-journey'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -51,8 +51,15 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
           <PhotoCapture plantId={id} plantName={plant.name} />
         </div>
 
-        {/* Timeline */}
-        <Timeline photos={plant.photos} statusHistory={plant.statusHistory} />
+        {/* Plant Journey */}
+        <PlantJourney 
+          plantedDate={plant.plantedDate}
+          daysToGermination={plant.daysToGermination}
+          daysToHarvest={plant.daysToHarvest}
+          currentStatus={plant.status}
+          photos={plant.photos} 
+          statusHistory={plant.statusHistory} 
+        />
 
         {/* Latest Photo Display */}
         {plant.photos.length > 0 && (
