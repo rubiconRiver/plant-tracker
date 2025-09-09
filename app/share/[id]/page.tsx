@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import PlantJourney from '@/components/plants/plant-journey'
+import LocationDisplay from '@/components/plants/location-display'
+import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
 
 export default async function PublicPlantPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -29,13 +31,6 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
   const plantedDate = new Date(plant.plantedDate).toLocaleDateString()
   const latestPhoto = plant.photos[0]
   
-  const statusColors: Record<string, string> = {
-    seedling: 'bg-green-100 text-green-800',
-    growing: 'bg-blue-100 text-blue-800',
-    mature: 'bg-purple-100 text-purple-800',
-    harvested: 'bg-yellow-100 text-yellow-800',
-    dead: 'bg-gray-100 text-gray-800'
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -84,9 +79,9 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
               )}
             </div>
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              statusColors[plant.status] || statusColors.seedling
+              statusColors[plant.status] || 'bg-gray-100 text-gray-800'
             }`}>
-              {plant.status}
+              {getStatusIcon(plant.status)} {getStatusLabel(plant.status)}
             </span>
           </div>
 
@@ -101,11 +96,16 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
                     <dd className="text-gray-900 mb-3">{plant.garden.name}</dd>
                   </>
                 )}
-                {plant.gardenRow !== null && plant.gardenColumn !== null && (
+                {plant.garden && plant.gardenRow !== null && plant.gardenColumn !== null && (
                   <>
                     <dt className="text-sm font-medium text-gray-500">Position</dt>
                     <dd className="text-gray-900 mb-3">
-                      Row {plant.gardenRow}, Column {plant.gardenColumn}
+                      <LocationDisplay
+                        row={plant.gardenRow}
+                        column={plant.gardenColumn}
+                        totalRows={plant.garden.rows}
+                        totalColumns={plant.garden.columnsPerRow}
+                      />
                     </dd>
                   </>
                 )}

@@ -6,6 +6,8 @@ import Link from 'next/link'
 import PlantAutocomplete from '@/components/plants/plant-autocomplete'
 import LocationPicker from '@/components/gardens/location-picker'
 import { PlantInfo, LocalPlantService } from '@/lib/services/local-plants'
+import { getRandomPlantName } from '@/lib/plant-names'
+import { plantStatuses } from '@/lib/plant-status'
 
 export default function NewPlantPage() {
   const router = useRouter()
@@ -47,6 +49,10 @@ export default function NewPlantPage() {
       const plantService = new LocalPlantService()
       const formattedNotes = plantService.formatPlantNotes(plant)
       setNotes(formattedNotes)
+      
+      // Generate a fun name suggestion
+      const funName = getRandomPlantName(plant.name)
+      setPlantName(funName)
     } else {
       // User is typing a custom plant name
       setSelectedPlant(null)
@@ -139,20 +145,28 @@ export default function NewPlantPage() {
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Plant Name/Nickname *
-              <span className="text-xs text-gray-500 ml-2">
-                (e.g., &quot;Basil #1&quot; or &quot;Kitchen Windowsill Basil&quot;)
-              </span>
+              {plantName && selectedPlant && (
+                <button
+                  type="button"
+                  onClick={() => setPlantName(getRandomPlantName(selectedPlant.name))}
+                  className="ml-2 text-xs text-green-600 hover:text-green-700 underline"
+                >
+                  🎲 Generate new name
+                </button>
+              )}
             </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              value={plantName}
-              onChange={(e) => setPlantName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
-              placeholder={species ? `${species} #1` : "Give your plant a unique name"}
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                value={plantName}
+                onChange={(e) => setPlantName(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                placeholder={species ? `${species} #1` : "Give your plant a unique name"}
+              />
+            </div>
           </div>
 
           {/* Location Grid Picker */}
@@ -190,13 +204,14 @@ export default function NewPlantPage() {
             <select
               id="status"
               name="status"
+              defaultValue="seed"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
             >
-              <option value="seedling">Seedling</option>
-              <option value="growing">Growing</option>
-              <option value="mature">Mature</option>
-              <option value="harvested">Harvested</option>
-              <option value="dead">Dead</option>
+              {plantStatuses.map(status => (
+                <option key={status.value} value={status.value}>
+                  {status.icon} {status.label} - {status.description}
+                </option>
+              ))}
             </select>
           </div>
 

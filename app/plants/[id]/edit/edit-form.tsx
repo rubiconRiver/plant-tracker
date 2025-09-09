@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { getRandomPlantName } from '@/lib/plant-names'
+import { plantStatuses } from '@/lib/plant-status'
 
 interface Plant {
   id: string
@@ -21,6 +23,8 @@ interface EditPlantFormProps {
 export default function EditPlantForm({ plant }: EditPlantFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [currentName, setCurrentName] = useState(plant.name)
+  const [currentSpecies, setCurrentSpecies] = useState(plant.species || '')
   
   const plantedDateString = new Date(plant.plantedDate).toISOString().split('T')[0]
 
@@ -70,14 +74,27 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
             Plant Name *
+            {currentSpecies && (
+              <button
+                type="button"
+                onClick={() => {
+                  const newName = getRandomPlantName(currentSpecies)
+                  setCurrentName(newName)
+                }}
+                className="ml-2 text-xs text-green-600 hover:text-green-700 underline"
+              >
+                🎲 Generate fun name
+              </button>
+            )}
           </label>
           <input
             type="text"
             id="name"
             name="name"
             required
-            defaultValue={plant.name}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={currentName}
+            onChange={(e) => setCurrentName(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
           />
         </div>
 
@@ -89,8 +106,9 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
             type="text"
             id="species"
             name="species"
-            defaultValue={plant.species || ''}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={currentSpecies}
+            onChange={(e) => setCurrentSpecies(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
           />
         </div>
 
@@ -129,13 +147,13 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
             id="status"
             name="status"
             defaultValue={plant.status}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
           >
-            <option value="seedling">Seedling</option>
-            <option value="growing">Growing</option>
-            <option value="mature">Mature</option>
-            <option value="harvested">Harvested</option>
-            <option value="dead">Dead</option>
+            {plantStatuses.map(status => (
+              <option key={status.value} value={status.value}>
+                {status.icon} {status.label} - {status.description}
+              </option>
+            ))}
           </select>
         </div>
 

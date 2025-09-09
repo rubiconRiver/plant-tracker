@@ -145,7 +145,10 @@ export default function LocationPicker({
               className="grid gap-2"
               style={{ gridTemplateRows: `repeat(${selectedGarden.rows}, 1fr)` }}
             >
-              {Array.from({ length: selectedGarden.rows }).map((_, rowIndex) => (
+              {/* Reverse row order so row 1 is at bottom */}
+              {Array.from({ length: selectedGarden.rows }).map((_, displayRowIndex) => {
+                const rowIndex = selectedGarden.rows - 1 - displayRowIndex
+                return (
                 <div
                   key={rowIndex}
                   className="grid gap-2"
@@ -181,7 +184,8 @@ export default function LocationPicker({
                     )
                   })}
                 </div>
-              ))}
+                )
+              })}
             </div>
             
             <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">

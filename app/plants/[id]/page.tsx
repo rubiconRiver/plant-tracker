@@ -6,6 +6,8 @@ import DeletePlantButton from './delete-button'
 import PhotoCapture from '@/components/plants/photo-capture'
 import NfcTagLinker from '@/components/plants/nfc-tag-linker'
 import PlantJourney from '@/components/plants/plant-journey'
+import LocationDisplay from '@/components/plants/location-display'
+import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -17,7 +19,8 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
       },
       statusHistory: {
         orderBy: { changedAt: 'desc' }
-      }
+      },
+      garden: true
     }
   })
 
@@ -29,13 +32,6 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
   const createdDate = new Date(plant.createdAt).toLocaleDateString()
   const updatedDate = new Date(plant.updatedAt).toLocaleDateString()
 
-  const statusColors: Record<string, string> = {
-    seedling: 'bg-green-100 text-green-800',
-    growing: 'bg-blue-100 text-blue-800',
-    mature: 'bg-purple-100 text-purple-800',
-    harvested: 'bg-yellow-100 text-yellow-800',
-    dead: 'bg-gray-100 text-gray-800'
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,7 +86,7 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{plant.name}</h1>
               <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${statusColors[plant.status] || 'bg-gray-100 text-gray-800'}`}>
-                {plant.status}
+                {getStatusIcon(plant.status)} {getStatusLabel(plant.status)}
               </span>
             </div>
             <div className="flex gap-2">
@@ -114,9 +110,23 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
                     <dd className="text-gray-900 mb-3">{plant.species}</dd>
                   </>
                 )}
+                {plant.garden && plant.gardenRow !== null && plant.gardenColumn !== null && (
+                  <>
+                    <dt className="text-sm font-medium text-gray-500">Garden Position</dt>
+                    <dd className="text-gray-900 mb-3">
+                      <LocationDisplay
+                        gardenName={plant.garden.name}
+                        row={plant.gardenRow}
+                        column={plant.gardenColumn}
+                        totalRows={plant.garden.rows}
+                        totalColumns={plant.garden.columnsPerRow}
+                      />
+                    </dd>
+                  </>
+                )}
                 {plant.location && (
                   <>
-                    <dt className="text-sm font-medium text-gray-500">Location</dt>
+                    <dt className="text-sm font-medium text-gray-500">Notes/Location</dt>
                     <dd className="text-gray-900 mb-3">{plant.location}</dd>
                   </>
                 )}

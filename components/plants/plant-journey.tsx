@@ -21,13 +21,7 @@ interface PlantJourneyProps {
   }>
 }
 
-const statusColors: Record<string, string> = {
-  seedling: 'bg-green-100 text-green-800 border-green-300',
-  growing: 'bg-blue-100 text-blue-800 border-blue-300',
-  mature: 'bg-purple-100 text-purple-800 border-purple-300',
-  harvested: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  dead: 'bg-gray-100 text-gray-800 border-gray-300'
-}
+import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
 
 export default function PlantJourney({
   plantedDate,
