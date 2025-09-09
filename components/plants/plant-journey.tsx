@@ -21,7 +21,7 @@ interface PlantJourneyProps {
   }>
 }
 
-import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
+import { statusColors } from '@/lib/plant-status'
 
 export default function PlantJourney({
   plantedDate,

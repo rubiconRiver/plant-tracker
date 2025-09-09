@@ -34,7 +34,13 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
     row: plant.gardenRow,
     column: plant.gardenColumn
   })
-  const [existingPlants, setExistingPlants] = useState<any[]>([])
+  interface ExistingPlant {
+    id: string
+    gardenId: string | null
+    gardenRow: number | null
+    gardenColumn: number | null
+  }
+  const [existingPlants, setExistingPlants] = useState<ExistingPlant[]>([])
   
   const plantedDateString = new Date(plant.plantedDate).toISOString().split('T')[0]
 
@@ -44,10 +50,10 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
       .then(res => res.json())
       .then(data => {
         // Filter out current plant from occupied positions
-        setExistingPlants(data?.filter((p: any) => p.id !== plant.id) || [])
+        setExistingPlants(data?.filter((p: ExistingPlant) => p.id !== plant.id) || [])
       })
       .catch(() => setExistingPlants([]))
-  }, [])
+  }, [plant.id])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
