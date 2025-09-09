@@ -1,16 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getRandomPlantName } from '@/lib/plant-names'
 import { plantStatuses } from '@/lib/plant-status'
+import LocationPicker from '@/components/gardens/location-picker'
 
 interface Plant {
   id: string
   name: string
   species: string | null
   location: string | null
+  gardenId: string | null
+  gardenRow: number | null
+  gardenColumn: number | null
   plantedDate: Date
   status: string
   notes: string | null
@@ -25,8 +29,25 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [currentName, setCurrentName] = useState(plant.name)
   const [currentSpecies, setCurrentSpecies] = useState(plant.species || '')
+  const [location, setLocation] = useState({
+    gardenId: plant.gardenId,
+    row: plant.gardenRow,
+    column: plant.gardenColumn
+  })
+  const [existingPlants, setExistingPlants] = useState<any[]>([])
   
   const plantedDateString = new Date(plant.plantedDate).toISOString().split('T')[0]
+
+  // Load existing plants for location picker
+  useEffect(() => {
+    fetch('/api/plants')
+      .then(res => res.json())
+      .then(data => {
+        // Filter out current plant from occupied positions
+        setExistingPlants(data?.filter((p: any) => p.id !== plant.id) || [])
+      })
+      .catch(() => setExistingPlants([]))
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -37,6 +58,9 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
       name: formData.get('name'),
       species: formData.get('species') || null,
       location: formData.get('location') || null,
+      gardenId: location.gardenId,
+      gardenRow: location.row,
+      gardenColumn: location.column,
       plantedDate: formData.get('plantedDate'),
       status: formData.get('status'),
       notes: formData.get('notes') || null
@@ -112,16 +136,25 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
           />
         </div>
 
+        {/* Location Grid Picker */}
+        <LocationPicker
+          value={location}
+          onChange={setLocation}
+          existingPlants={existingPlants}
+        />
+
         <div>
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-            Location
+            Additional Location Notes
+            <span className="text-xs text-gray-500 ml-2">(optional)</span>
           </label>
           <input
             type="text"
             id="location"
             name="location"
             defaultValue={plant.location || ''}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+            placeholder="e.g., Near window, Under grow light"
           />
         </div>
 

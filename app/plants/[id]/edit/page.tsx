@@ -5,7 +5,10 @@ import EditPlantForm from './edit-form'
 export default async function EditPlantPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const plant = await db.plant.findUnique({
-    where: { id }
+    where: { id },
+    include: {
+      garden: true
+    }
   })
 
   if (!plant) {
