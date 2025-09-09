@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
+import PlantJourney from '@/components/plants/plant-journey'
 
 export default async function PublicPlantPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -13,7 +14,10 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
       photos: {
         orderBy: { takenAt: 'desc' }
       },
-      garden: true
+      garden: true,
+      statusHistory: {
+        orderBy: { changedAt: 'desc' }
+      }
     }
   })
 
@@ -45,6 +49,16 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
             </Link>
           </p>
         </div>
+
+        {/* Plant Journey Timeline */}
+        <PlantJourney 
+          plantedDate={plant.plantedDate}
+          daysToGermination={plant.daysToGermination}
+          daysToHarvest={plant.daysToHarvest}
+          currentStatus={plant.status}
+          photos={plant.photos} 
+          statusHistory={plant.statusHistory} 
+        />
 
         {/* Main Photo */}
         {latestPhoto && (
