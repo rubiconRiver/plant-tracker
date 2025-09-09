@@ -65,6 +65,19 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
     
+    // Check if status is changing
+    const currentPlant = await db.plant.findUnique({
+      where: { id },
+      select: { status: true }
+    })
+    
+    if (!currentPlant) {
+      return NextResponse.json({ error: 'Plant not found' }, { status: 404 })
+    }
+    
+    const statusChanged = body.status && body.status !== currentPlant.status
+    
+    // Update plant and create status history if status changed
     const plant = await db.plant.update({
       where: { id },
       data: {
@@ -73,7 +86,15 @@ export async function PUT(
         location: body.location,
         plantedDate: body.plantedDate ? new Date(body.plantedDate) : undefined,
         status: body.status,
-        notes: body.notes
+        notes: body.notes,
+        ...(statusChanged && {
+          statusHistory: {
+            create: {
+              status: body.status,
+              notes: body.statusChangeNotes || null
+            }
+          }
+        })
       }
     })
     

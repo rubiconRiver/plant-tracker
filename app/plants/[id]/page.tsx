@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import DeletePlantButton from './delete-button'
 import PhotoCapture from '@/components/plants/photo-capture'
 import NfcTagLinker from '@/components/plants/nfc-tag-linker'
+import Timeline from '@/components/plants/timeline'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -13,6 +14,9 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
     include: {
       photos: {
         orderBy: { takenAt: 'desc' }
+      },
+      statusHistory: {
+        orderBy: { changedAt: 'desc' }
       }
     }
   })
@@ -46,6 +50,9 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
         <div className="mb-6">
           <PhotoCapture plantId={id} plantName={plant.name} />
         </div>
+
+        {/* Timeline */}
+        <Timeline photos={plant.photos} statusHistory={plant.statusHistory} />
 
         {/* Latest Photo Display */}
         {plant.photos.length > 0 && (

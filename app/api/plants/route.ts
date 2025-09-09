@@ -58,6 +58,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
+    const initialStatus = body.status || 'seedling'
+    
     const plant = await db.plant.create({
       data: {
         name: body.name,
@@ -67,12 +69,18 @@ export async function POST(request: NextRequest) {
         gardenRow: body.gardenRow !== undefined ? body.gardenRow : null,
         gardenColumn: body.gardenColumn !== undefined ? body.gardenColumn : null,
         plantedDate: new Date(body.plantedDate),
-        status: body.status || 'seedling',
+        status: initialStatus,
         notes: body.notes || null,
         openFarmId: body.openFarmId || null,
         openFarmData: body.openFarmData || null,
         daysToGermination: body.daysToGermination || null,
-        daysToHarvest: body.daysToHarvest || null
+        daysToHarvest: body.daysToHarvest || null,
+        statusHistory: {
+          create: {
+            status: initialStatus,
+            notes: 'Plant created'
+          }
+        }
       }
     })
     

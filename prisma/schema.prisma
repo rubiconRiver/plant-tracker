@@ -122,6 +122,7 @@ model Plant {
   garden            Garden?  @relation(fields: [gardenId], references: [id], onDelete: SetNull)
   photos            Photo[]
   nfcTags           NfcTag[]
+  statusHistory     StatusHistory[]
 }
 
 model Photo {
@@ -143,4 +144,16 @@ model NfcTag {
   updatedAt DateTime @updatedAt
   
   plant     Plant?   @relation(fields: [plantId], references: [id], onDelete: SetNull)
+}
+
+model StatusHistory {
+  id        String   @id @default(cuid())
+  plantId   String
+  status    String
+  changedAt DateTime @default(now())
+  notes     String?  // Optional notes about the status change
+  
+  plant     Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId, changedAt])
 }
