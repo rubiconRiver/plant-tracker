@@ -174,7 +174,7 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
             name="plantedDate"
             required
             defaultValue={plantedDateString}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
           />
         </div>
 
@@ -205,7 +205,7 @@ export default function EditPlantForm({ plant }: EditPlantFormProps) {
             name="notes"
             rows={4}
             defaultValue={plant.notes || ''}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
           />
         </div>
 
