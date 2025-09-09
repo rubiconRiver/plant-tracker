@@ -13,7 +13,7 @@ function UnassignedTagPage({ uuid }: { uuid: string }) {
         
         <div className="bg-white rounded-lg p-4 space-y-3">
           <p className="text-sm text-gray-500">Tag UUID:</p>
-          <p className="font-mono text-xs bg-gray-100 p-2 rounded break-all">
+          <p className="font-mono text-xs bg-gray-100 text-black p-2 rounded break-all">
             {uuid}
           </p>
           <CopyUuidButton uuid={uuid} />
@@ -44,7 +44,7 @@ function UnknownTagPage({ uuid }: { uuid: string }) {
         
         <div className="bg-white rounded-lg p-4 space-y-3">
           <p className="text-sm text-gray-500">Tag UUID:</p>
-          <p className="font-mono text-xs bg-gray-100 p-2 rounded break-all">
+          <p className="font-mono text-xs bg-gray-100 text-black p-2 rounded break-all">
             {uuid}
           </p>
           <CopyUuidButton uuid={uuid} />

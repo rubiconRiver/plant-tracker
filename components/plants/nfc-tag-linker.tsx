@@ -109,7 +109,7 @@ export default function NfcTagLinker({ plantId, plantName }: NfcTagLinkerProps) 
               value={tagUuid}
               onChange={(e) => setTagUuid(e.target.value)}
               placeholder="Enter tag UUID or scan below"
-              className="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg"
+              className="flex-1 px-3 py-2 text-sm bg-white text-black border border-gray-300 rounded-lg"
             />
             <button
               onClick={handleLinkTag}

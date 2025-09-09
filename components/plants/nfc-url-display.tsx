@@ -53,7 +53,7 @@ export default function NFCUrlDisplay({ plantId }: NFCUrlDisplayProps) {
             type="text"
             value={nfcUrl}
             readOnly
-            className="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg font-mono text-gray-700"
+            className="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg font-mono text-black"
             onClick={(e) => e.currentTarget.select()}
           />
           <button
