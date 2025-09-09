@@ -23,19 +23,19 @@ export default function VerifyRequest() {
           </h2>
           
           <p className="text-gray-600 mb-6">
-            We've sent a sign-in link to your email address.
+            We&apos;ve sent a sign-in link to your email address.
             Click the link to sign in to your account.
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-blue-800">
               <strong>Tip:</strong> The link will expire in 24 hours.
-              If you don't see the email, check your spam folder.
+              If you don&apos;t see the email, check your spam folder.
             </p>
           </div>
 
           <div className="text-sm text-gray-500">
-            <p>Didn't receive the email?</p>
+            <p>Didn&apos;t receive the email?</p>
             <a href="/auth/signin" className="text-green-600 hover:text-green-700 font-medium">
               Try again
             </a>
@@ -45,7 +45,7 @@ export default function VerifyRequest() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500">
-            You can close this window once you've clicked the link in your email.
+            You can close this window once you&apos;ve clicked the link in your email.
           </p>
         </div>
       </div>

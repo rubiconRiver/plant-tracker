@@ -41,7 +41,7 @@ export default function SignIn() {
             <span className="text-4xl">🌱</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Plant Tracker</h1>
-          <p className="text-gray-600 mt-2">Track your garden's journey</p>
+          <p className="text-gray-600 mt-2">Track your garden&apos;s journey</p>
         </div>
 
         {/* Sign In Card */}
@@ -92,7 +92,7 @@ export default function SignIn() {
 
           <div className="mt-6 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-600 text-center">
-              We'll send you a magic link to sign in instantly.
+              We&apos;ll send you a magic link to sign in instantly.
               <br />
               <span className="text-xs text-gray-500 mt-2 block">
                 No password needed!
