@@ -108,6 +108,7 @@ model Plant {
   plantedDate       DateTime
   status            String   @default("seedling")
   notes             String?
+  isShareable       Boolean  @default(true)  // Public sharing enabled by default
   
   // OpenFarm data
   openFarmId        String?
