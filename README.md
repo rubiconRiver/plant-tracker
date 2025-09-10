@@ -11,6 +11,7 @@ A personal plant tracking application for managing plants from seed to maturity,
 - **Photo Timeline**: Document plant growth with photos
 - **Fun Plant Names**: Automatic pun-based name suggestions (Basil Fawlty, Tomato Cruise, etc.)
 - **Mobile-First**: Optimized for phone access on local network
+- **Simple Photo Capture**: Easy photo documentation with mobile camera
 
 ## Quick Start
 
