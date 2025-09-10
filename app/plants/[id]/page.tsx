@@ -7,6 +7,7 @@ import PhotoCapture from '@/components/plants/photo-capture'
 import NfcTagLinker from '@/components/plants/nfc-tag-linker'
 import PlantJourney from '@/components/plants/plant-journey'
 import LocationDisplay from '@/components/plants/location-display'
+import GrowthTimelapse from '@/components/plants/growth-timelapse'
 import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,6 +56,12 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
           currentStatus={plant.status}
           photos={plant.photos} 
           statusHistory={plant.statusHistory} 
+        />
+
+        {/* Growth Timelapse */}
+        <GrowthTimelapse 
+          photos={plant.photos}
+          plantName={plant.name}
         />
 
         {/* Latest Photo Display */}
