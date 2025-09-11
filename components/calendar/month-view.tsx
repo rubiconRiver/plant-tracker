@@ -1,40 +1,43 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
 interface CalendarEvent {
   id: string
-  type: 'water' | 'harvest' | 'planted' | 'fertilize' | 'check'
+  date: string
+  type: 'water' | 'harvest' | 'planted' | 'germination' | 'photo' | 'photo-reminder' | 'status'
+  plantId: string
   plantName: string
-  emoji?: string
-}
-
-// Mock data - will be replaced with real data
-const mockEvents: Record<string, CalendarEvent[]> = {
-  '2025-01-15': [
-    { id: '1', type: 'water', plantName: 'Tomatoes', emoji: '🍅' },
-    { id: '2', type: 'check', plantName: 'Basil', emoji: '🌿' }
-  ],
-  '2025-01-20': [
-    { id: '3', type: 'harvest', plantName: 'Lettuce', emoji: '🥬' }
-  ],
-  '2025-01-25': [
-    { id: '4', type: 'planted', plantName: 'Peppers', emoji: '🌶️' }
-  ],
-  '2025-01-28': [
-    { id: '5', type: 'fertilize', plantName: 'Tomatoes', emoji: '🍅' },
-    { id: '6', type: 'water', plantName: 'Carrots', emoji: '🥕' },
-    { id: '7', type: 'water', plantName: 'Cucumber', emoji: '🥒' }
-  ]
+  description: string
+  status?: string
 }
 
 const eventColors = {
   water: 'bg-blue-500',
   harvest: 'bg-orange-500',
   planted: 'bg-green-500',
-  fertilize: 'bg-purple-500',
-  check: 'bg-yellow-500'
+  germination: 'bg-lime-500',
+  photo: 'bg-pink-500',
+  'photo-reminder': 'bg-purple-500',
+  status: 'bg-yellow-500'
+}
+
+const getPlantEmoji = (plantName: string) => {
+  const name = plantName.toLowerCase()
+  if (name.includes('tomato')) return '🍅'
+  if (name.includes('pepper')) return '🌶️'
+  if (name.includes('lettuce')) return '🥬'
+  if (name.includes('carrot')) return '🥕'
+  if (name.includes('cucumber')) return '🥒'
+  if (name.includes('basil')) return '🌿'
+  if (name.includes('herb')) return '🌿'
+  return '🌱'
 }
 
 export default function CalendarMonthView({ date }: { date: Date }) {
+  const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [loading, setLoading] = useState(true)
+  
   const year = date.getFullYear()
   const month = date.getMonth()
   
@@ -43,6 +46,27 @@ export default function CalendarMonthView({ date }: { date: Date }) {
   const lastDay = new Date(year, month + 1, 0)
   const daysInMonth = lastDay.getDate()
   const startingDayOfWeek = firstDay.getDay()
+  
+  // Fetch events when date changes
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true)
+      const start = new Date(year, month, 1).toISOString()
+      const end = new Date(year, month + 1, 0).toISOString()
+      
+      try {
+        const response = await fetch(`/api/calendar?start=${start}&end=${end}`)
+        const data = await response.json()
+        setEvents(data.events || [])
+      } catch (error) {
+        console.error('Failed to fetch events:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchEvents()
+  }, [year, month])
   
   // Generate calendar days
   const calendarDays: (number | null)[] = []
@@ -62,15 +86,21 @@ export default function CalendarMonthView({ date }: { date: Date }) {
 
   const getEventsForDay = (day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-    return mockEvents[dateStr] || []
+    return events.filter(event => event.date === dateStr)
   }
+  
+  // Calculate stats
+  const waterCount = events.filter(e => e.type === 'water').length
+  const harvestCount = events.filter(e => e.type === 'harvest').length
+  const photoCount = events.filter(e => e.type === 'photo' || e.type === 'photo-reminder').length
+  const plantedCount = events.filter(e => e.type === 'planted').length
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
       {/* Day Headers */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center text-xs sm:text-sm font-semibold text-gray-600 py-2">
+          <div key={day} className="text-center text-xs sm:text-sm font-semibold text-gray-900 py-2">
             {day}
           </div>
         ))}
@@ -94,7 +124,7 @@ export default function CalendarMonthView({ date }: { date: Date }) {
             >
               {day && (
                 <>
-                  <div className={`text-xs sm:text-sm font-medium ${isToday(day) ? 'text-green-700' : 'text-gray-700'}`}>
+                  <div className={`text-xs sm:text-sm font-medium ${isToday(day) ? 'text-green-700' : 'text-gray-900'}`}>
                     {day}
                   </div>
                   
@@ -108,9 +138,9 @@ export default function CalendarMonthView({ date }: { date: Date }) {
                       >
                         <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${eventColors[event.type]}`}></div>
                         <span className="text-[10px] sm:text-xs truncate hidden sm:block">
-                          {event.emoji} {event.plantName}
+                          {getPlantEmoji(event.plantName)} {event.plantName}
                         </span>
-                        <span className="text-[10px] sm:hidden">{event.emoji}</span>
+                        <span className="text-[10px] sm:hidden">{getPlantEmoji(event.plantName)}</span>
                       </div>
                     ))}
                     {hasMany && (
@@ -137,28 +167,30 @@ export default function CalendarMonthView({ date }: { date: Date }) {
       </div>
       
       {/* Quick Stats */}
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-blue-50 rounded-lg p-3">
-          <div className="text-2xl mb-1">💧</div>
-          <div className="text-sm font-semibold text-gray-700">3 plants</div>
-          <div className="text-xs text-gray-500">Need water this week</div>
+      {!loading && (
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-blue-50 rounded-lg p-3">
+            <div className="text-2xl mb-1">💧</div>
+            <div className="text-sm font-semibold text-gray-900">{waterCount} waterings</div>
+            <div className="text-xs text-gray-500">This month</div>
+          </div>
+          <div className="bg-orange-50 rounded-lg p-3">
+            <div className="text-2xl mb-1">🌾</div>
+            <div className="text-sm font-semibold text-gray-900">{harvestCount} harvests</div>
+            <div className="text-xs text-gray-500">Expected</div>
+          </div>
+          <div className="bg-green-50 rounded-lg p-3">
+            <div className="text-2xl mb-1">🌱</div>
+            <div className="text-sm font-semibold text-gray-900">{plantedCount} planted</div>
+            <div className="text-xs text-gray-500">This month</div>
+          </div>
+          <div className="bg-purple-50 rounded-lg p-3">
+            <div className="text-2xl mb-1">📸</div>
+            <div className="text-sm font-semibold text-gray-900">{photoCount} photos</div>
+            <div className="text-xs text-gray-500">Scheduled</div>
+          </div>
         </div>
-        <div className="bg-orange-50 rounded-lg p-3">
-          <div className="text-2xl mb-1">🌾</div>
-          <div className="text-sm font-semibold text-gray-700">2 harvests</div>
-          <div className="text-xs text-gray-500">Expected this month</div>
-        </div>
-        <div className="bg-green-50 rounded-lg p-3">
-          <div className="text-2xl mb-1">🌱</div>
-          <div className="text-sm font-semibold text-gray-700">5 seedlings</div>
-          <div className="text-xs text-gray-500">In germination</div>
-        </div>
-        <div className="bg-purple-50 rounded-lg p-3">
-          <div className="text-2xl mb-1">📸</div>
-          <div className="text-sm font-semibold text-gray-700">8 photos</div>
-          <div className="text-xs text-gray-500">Due this week</div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }
