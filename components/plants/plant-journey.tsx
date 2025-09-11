@@ -96,40 +96,65 @@ export default function PlantJourney({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex justify-between items-center mb-6">
+      <article style={{ marginBottom: '1.5rem' }}>
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-700">Plant Journey</h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <h3>Plant Journey</h3>
+            <p className="text-small text-muted">
               Day {daysSincePlanting} of {totalDays} 
               {daysToHarvest && daysSincePlanting > totalDays && ` (${daysSincePlanting - totalDays} days past expected harvest)`}
             </p>
           </div>
           <button
             onClick={() => setShowDetails(true)}
-            className="text-sm text-blue-600 hover:text-blue-700"
+            className="secondary"
+            style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
           >
             View Timeline Details →
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className="relative mb-8">
+        <div style={{ position: 'relative', marginBottom: '2rem' }}>
           {/* Background track */}
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div style={{ 
+            height: '0.75rem', 
+            background: 'var(--card-border)', 
+            borderRadius: '9999px',
+            overflow: 'hidden'
+          }}>
             {/* Progress fill */}
             <div 
-              className="h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500"
-              style={{ width: `${progressPercent}%` }}
+              style={{ 
+                height: '100%',
+                background: 'linear-gradient(to right, var(--primary), var(--primary-hover))',
+                transition: 'width 0.5s',
+                width: `${progressPercent}%`
+              }}
             />
           </div>
           
           {/* Today marker */}
           <div 
-            className="absolute top-0 w-1 h-3 bg-red-500"
-            style={{ left: `${progressPercent}%` }}
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              width: '2px',
+              height: '0.75rem',
+              background: 'var(--accent)',
+              left: `${progressPercent}%`
+            }}
           >
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-red-600 font-medium whitespace-nowrap">
+            <div style={{
+              position: 'absolute',
+              top: '-1.5rem',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              fontSize: '0.75rem',
+              color: 'var(--accent)',
+              fontWeight: 500,
+              whiteSpace: 'nowrap'
+            }}>
               Today
             </div>
           </div>
@@ -143,16 +168,22 @@ export default function PlantJourney({
               className="absolute -top-2 flex flex-col items-center"
               style={{ left: `${milestone.position}%`, transform: 'translateX(-50%)' }}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
-                milestone.reached 
-                  ? 'bg-green-100 border-green-500' 
-                  : 'bg-gray-100 border-gray-300'
-              }`}>
+              <div style={{
+                width: '2rem',
+                height: '2rem',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid',
+                borderColor: milestone.reached ? 'var(--primary)' : 'var(--card-border)',
+                background: milestone.reached ? 'rgba(101, 163, 13, 0.1)' : 'var(--background)'
+              }}>
                 <span className="text-sm">{milestone.icon}</span>
               </div>
-              <div className="mt-2 text-xs text-center">
-                <div className="font-medium text-gray-700">{milestone.label}</div>
-                <div className="text-gray-500">
+              <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', textAlign: 'center' }}>
+                <div style={{ fontWeight: 500 }}>{milestone.label}</div>
+                <div className="text-muted">
                   {milestone.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
               </div>
@@ -172,7 +203,14 @@ export default function PlantJourney({
                   style={{ left: `${Math.min(100, Math.max(0, position))}%`, transform: 'translateX(-50%)' }}
                 >
                   {event.type === 'photo' ? (
-                    <div className="w-6 h-6 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <div style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      border: '2px solid var(--card)',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }}>
                       <Image
                         src={event.data.photoUrl!}
                         alt="Plant photo"
@@ -182,9 +220,20 @@ export default function PlantJourney({
                       />
                     </div>
                   ) : (
-                    <div className={`w-6 h-6 rounded-full border-2 ${
-                      statusColors[event.data.status!] || 'bg-gray-100 border-gray-300'
-                    } shadow-sm flex items-center justify-center`}>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      borderRadius: '50%',
+                      border: '2px solid var(--card-border)',
+                      background: event.data.status === 'seedling' ? 'rgba(101, 163, 13, 0.2)' :
+                                 event.data.status === 'growing' ? 'rgba(59, 130, 246, 0.2)' :
+                                 event.data.status === 'flowering' || event.data.status === 'fruiting' ? 'rgba(234, 88, 12, 0.2)' :
+                                 'var(--background)',
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
                       <span className="text-xs">●</span>
                     </div>
                   )}
@@ -195,24 +244,32 @@ export default function PlantJourney({
         )}
 
         {/* Status Summary */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div style={{ 
+          marginTop: '1.5rem',
+          padding: '1rem',
+          background: 'var(--background)',
+          borderRadius: '0.5rem'
+        }}>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm text-gray-600">Current Status:</span>
-              <span className={`ml-2 px-2 py-1 text-sm rounded-full ${
-                statusColors[currentStatus] || 'bg-gray-100 text-gray-800'
-              }`}>
+              <span className="text-small text-muted">Current Status:</span>
+              <span className={`badge ${
+                currentStatus === 'seedling' ? 'success' :
+                currentStatus === 'growing' ? 'info' :
+                currentStatus === 'flowering' || currentStatus === 'fruiting' ? 'warning' :
+                'muted'
+              }`} style={{ marginLeft: '0.5rem' }}>
                 {currentStatus}
               </span>
             </div>
             {daysToHarvest && daysSincePlanting < daysToHarvest && (
-              <div className="text-sm text-gray-600">
+              <div className="text-small text-muted">
                 {daysToHarvest - daysSincePlanting} days until harvest
               </div>
             )}
           </div>
         </div>
-      </div>
+      </article>
 
       {/* Timeline Details Modal */}
       {showDetails && (
@@ -271,28 +328,72 @@ function TimelineDetails({
   }, {} as Record<string, typeof allEvents>)
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold">Timeline Details</h2>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      zIndex: 50
+    }}>
+      <div style={{
+        background: 'var(--card)',
+        borderRadius: '0.75rem',
+        maxWidth: '56rem',
+        width: '100%',
+        maxHeight: '80vh',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1rem',
+          borderBottom: '1px solid var(--card-border)'
+        }}>
+          <h2>Timeline Details</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="secondary"
+            style={{ 
+              padding: '0.25rem 0.5rem',
+              fontSize: '1.5rem',
+              background: 'transparent',
+              color: 'var(--muted)'
+            }}
           >
             ×
           </button>
         </div>
         
-        <div className="p-4 overflow-y-auto max-h-[calc(80vh-4rem)]">
+        <div style={{
+          padding: '1rem',
+          overflowY: 'auto',
+          maxHeight: 'calc(80vh - 4rem)'
+        }}>
           {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-            <div key={month} className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-3">{month}</h3>
-              <div className="space-y-3">
+            <div key={month} style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ marginBottom: '0.75rem' }}>{month}</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {monthEvents.map(event => (
-                  <div key={event.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div key={event.id} style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.75rem',
+                    padding: '0.75rem',
+                    background: 'var(--background)',
+                    borderRadius: '0.5rem'
+                  }}>
                     <div className="flex-shrink-0">
                       {event.type === 'photo' ? (
-                        <div className="w-16 h-16 rounded-lg overflow-hidden">
+                        <div style={{
+                          width: '4rem',
+                          height: '4rem',
+                          borderRadius: '0.5rem',
+                          overflow: 'hidden'
+                        }}>
                           <Image
                             src={event.data.photoUrl!}
                             alt="Plant photo"
@@ -302,26 +403,43 @@ function TimelineDetails({
                           />
                         </div>
                       ) : event.type === 'milestone' ? (
-                        <div className="w-16 h-16 rounded-lg bg-green-100 flex items-center justify-center">
+                        <div style={{
+                          width: '4rem',
+                          height: '4rem',
+                          borderRadius: '0.5rem',
+                          background: 'rgba(101, 163, 13, 0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
                           <span className="text-2xl">{event.data.icon}</span>
                         </div>
                       ) : (
-                        <div className={`w-16 h-16 rounded-lg flex items-center justify-center ${
-                          statusColors[event.data.status!] || 'bg-gray-100'
-                        }`}>
-                          <span className="text-sm font-medium">{event.data.status}</span>
+                        <div style={{
+                          width: '4rem',
+                          height: '4rem',
+                          borderRadius: '0.5rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: event.data.status === 'seedling' ? 'rgba(101, 163, 13, 0.1)' :
+                                     event.data.status === 'growing' ? 'rgba(59, 130, 246, 0.1)' :
+                                     event.data.status === 'flowering' || event.data.status === 'fruiting' ? 'rgba(234, 88, 12, 0.1)' :
+                                     'var(--background)'
+                        }}>
+                          <span className="text-small" style={{ fontWeight: 500 }}>{event.data.status}</span>
                         </div>
                       )}
                     </div>
                     
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">
+                        <span style={{ fontWeight: 500 }}>
                           {event.type === 'photo' ? 'Photo added' : 
                            event.type === 'milestone' ? event.data.label :
                            `Status: ${event.data.status}`}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-small text-muted">
                           {event.date.toLocaleDateString('en-US', { 
                             weekday: 'short',
                             month: 'short',
@@ -330,7 +448,7 @@ function TimelineDetails({
                         </span>
                       </div>
                       {event.type === 'status' && event.data.notes && (
-                        <p className="text-sm text-gray-600 mt-1">{event.data.notes}</p>
+                        <p className="text-small text-muted" style={{ marginTop: '0.25rem' }}>{event.data.notes}</p>
                       )}
                     </div>
                   </div>

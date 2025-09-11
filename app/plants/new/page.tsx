@@ -8,6 +8,7 @@ import LocationPicker from '@/components/gardens/location-picker'
 import { PlantInfo, LocalPlantService } from '@/lib/services/local-plants'
 import { getRandomPlantName } from '@/lib/plant-names'
 import { plantStatuses } from '@/lib/plant-status'
+import { locationTypes } from '@/lib/location-types'
 
 export default function NewPlantPage() {
   const router = useRouter()
@@ -16,6 +17,8 @@ export default function NewPlantPage() {
   const [plantName, setPlantName] = useState('')
   const [species, setSpecies] = useState('')
   const [notes, setNotes] = useState('')
+  const [quantity, setQuantity] = useState(1)
+  const [locationType, setLocationType] = useState('garden')
   const [location, setLocation] = useState<{
     gardenId: string | null
     row: number | null
@@ -70,6 +73,8 @@ export default function NewPlantPage() {
       name: formData.get('name'),
       species: formData.get('species'),
       location: formData.get('location'),
+      locationType: formData.get('locationType'),
+      quantity: parseInt(formData.get('quantity') as string) || 1,
       gardenId: location.gardenId,
       gardenRow: location.row,
       gardenColumn: location.column,
@@ -103,17 +108,22 @@ export default function NewPlantPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <Link href="/" className="text-green-600 hover:text-green-700">
-            ← Back to Plants
+    <main>
+      <nav>
+        <div className="container flex items-center">
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>🌱</span>
           </Link>
+          <a href="/">← Back to Garden</a>
         </div>
+      </nav>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Add New Plant</h1>
+      <div className="container" style={{ maxWidth: '42rem' }}>
+        <header className="mb-4">
+          <h1>Add New Plant</h1>
+        </header>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Species/Variety Autocomplete */}
           <PlantAutocomplete
             value={species}
@@ -125,16 +135,21 @@ export default function NewPlantPage() {
           />
 
           {selectedPlant && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <p className="text-sm text-green-800">
+            <div style={{ 
+              background: 'rgba(101, 163, 13, 0.1)', 
+              border: '1px solid rgba(101, 163, 13, 0.3)',
+              borderRadius: '0.5rem',
+              padding: '0.75rem'
+            }}>
+              <p className="text-small" style={{ color: 'var(--primary)' }}>
                 ✓ Selected from database: <strong>{selectedPlant.name}</strong>
                 {selectedPlant.scientificName && (
-                  <span className="ml-2 text-green-600 italic">
+                  <span style={{ marginLeft: '0.5rem', fontStyle: 'italic' }}>
                     ({selectedPlant.scientificName})
                   </span>
                 )}
                 {selectedPlant.daysToHarvest && (
-                  <span className="ml-2 text-green-600">
+                  <span style={{ marginLeft: '0.5rem' }}>
                     • Harvest in ~{selectedPlant.daysToHarvest} days
                   </span>
                 )}
@@ -143,19 +158,27 @@ export default function NewPlantPage() {
           )}
 
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
               Plant Name/Nickname *
               {plantName && selectedPlant && (
                 <button
                   type="button"
                   onClick={() => setPlantName(getRandomPlantName(selectedPlant.name))}
-                  className="ml-2 text-xs text-green-600 hover:text-green-700 underline"
+                  className="secondary"
+                  style={{ 
+                    marginLeft: '0.5rem',
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.5rem',
+                    background: 'transparent',
+                    color: 'var(--primary)',
+                    textDecoration: 'underline'
+                  }}
                 >
                   🎲 Generate new name
                 </button>
               )}
             </label>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               <input
                 type="text"
                 id="name"
@@ -163,28 +186,91 @@ export default function NewPlantPage() {
                 required
                 value={plantName}
                 onChange={(e) => setPlantName(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                style={{ flex: 1 }}
                 placeholder={species ? `${species} #1` : "Give your plant a unique name"}
               />
             </div>
           </div>
 
-          {/* Location Grid Picker */}
-          <LocationPicker
-            value={location}
-            onChange={setLocation}
-            existingPlants={existingPlants}
-          />
+          <div className="grid grid-2 gap-3">
+            <div>
+              <label htmlFor="locationType" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
+                Location Type *
+              </label>
+              <select
+                id="locationType"
+                name="locationType"
+                value={locationType}
+                onChange={(e) => setLocationType(e.target.value)}
+                style={{ width: '100%' }}
+                required
+              >
+                {locationTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.icon} {type.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-small text-muted" style={{ marginTop: '0.25rem' }}>
+                {locationTypes.find(t => t.value === locationType)?.description}
+              </p>
+            </div>
 
-          {/* Legacy text location field (hidden but preserved for backwards compatibility) */}
-          <input
-            type="hidden"
-            name="location"
-            value=""
-          />
+            <div>
+              <label htmlFor="quantity" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
+                Quantity
+              </label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                style={{ width: '100%' }}
+              />
+              <p className="text-small text-muted" style={{ marginTop: '0.25rem' }}>
+                {quantity > 1 ? `Tracking ${quantity} plants together` : 'Single plant'}
+              </p>
+            </div>
+          </div>
+
+          {/* Location Grid Picker - only show for garden type */}
+          {locationType === 'garden' && (
+            <LocationPicker
+              value={location}
+              onChange={setLocation}
+              existingPlants={existingPlants}
+            />
+          )}
+
+          {/* Text location field for non-garden types */}
+          {locationType !== 'garden' && (
+            <div>
+              <label htmlFor="location" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
+                Location Details
+              </label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                placeholder={locationType === 'hydroponics' ? 'e.g., Tower A, Channel 3' : 'e.g., Living room, South window'}
+                style={{ width: '100%' }}
+              />
+            </div>
+          )}
+
+          {/* Hidden location field for garden type */}
+          {locationType === 'garden' && (
+            <input
+              type="hidden"
+              name="location"
+              value=""
+            />
+          )}
 
           <div>
-            <label htmlFor="plantedDate" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="plantedDate" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
               Planted Date *
             </label>
             <input
@@ -193,19 +279,19 @@ export default function NewPlantPage() {
               name="plantedDate"
               required
               defaultValue={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+              style={{ width: '100%' }}
             />
           </div>
 
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="status" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
               Status
             </label>
             <select
               id="status"
               name="status"
               defaultValue="seed"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+              style={{ width: '100%' }}
             >
               {plantStatuses.map(status => (
                 <option key={status.value} value={status.value}>
@@ -216,10 +302,10 @@ export default function NewPlantPage() {
           </div>
 
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="notes" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
               Notes
               {selectedPlant && (
-                <span className="text-xs text-green-600 ml-2">
+                <span className="text-small" style={{ color: 'var(--primary)', marginLeft: '0.5rem' }}>
                   (Auto-filled growing guide from database)
                 </span>
               )}
@@ -230,28 +316,30 @@ export default function NewPlantPage() {
               rows={8}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 font-mono text-sm text-black"
+              style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.875rem' }}
               placeholder="Any additional notes about this plant..."
             />
           </div>
 
-          <div className="flex gap-4">
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+              style={{ flex: 1 }}
             >
               {isSubmitting ? 'Creating...' : 'Create Plant'}
             </button>
             <Link
               href="/"
-              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors text-center"
+              style={{ flex: 1 }}
             >
-              Cancel
+              <button type="button" className="secondary" style={{ width: '100%' }}>
+                Cancel
+              </button>
             </Link>
           </div>
         </form>
       </div>
-    </div>
+    </main>
   )
 }

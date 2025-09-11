@@ -102,9 +102,11 @@ model Plant {
   name              String
   species           String?
   location          String?   // Legacy text field
+  locationType      String?   // Type of location: "garden", "hydroponics", "indoor", "greenhouse", etc.
   gardenId          String?   // Renamed from shelfId
   gardenRow         Int?      // Renamed from shelfRow
   gardenColumn      Int?      // Renamed from shelfColumn
+  quantity          Int      @default(1)  // Number of plants (for batch planting)
   plantedDate       DateTime
   status            String   @default("seedling")
   notes             String?

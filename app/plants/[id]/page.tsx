@@ -132,6 +132,27 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
                 <dd>{plantedDate.toLocaleDateString()} ({daysSincePlanted} days ago)</dd>
               </div>
               
+              {plant.locationType && (
+                <div>
+                  <dt className="text-small text-muted">Location Type</dt>
+                  <dd>
+                    {plant.locationType === 'hydroponics' && '💧 Hydroponics'}
+                    {plant.locationType === 'garden' && '🌻 Garden Bed'}
+                    {plant.locationType === 'indoor' && '🏠 Indoor'}
+                    {plant.locationType === 'greenhouse' && '🏡 Greenhouse'}
+                    {plant.locationType === 'balcony' && '🪴 Balcony/Patio'}
+                    {plant.locationType === 'windowsill' && '🪟 Windowsill'}
+                  </dd>
+                </div>
+              )}
+              
+              {plant.quantity && plant.quantity > 1 && (
+                <div>
+                  <dt className="text-small text-muted">Quantity</dt>
+                  <dd>{plant.quantity} plants</dd>
+                </div>
+              )}
+              
               {plant.garden && plant.gardenRow !== null && plant.gardenColumn !== null && (
                 <div>
                   <dt className="text-small text-muted">Garden Position</dt>
@@ -149,7 +170,7 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
               
               {plant.location && (
                 <div>
-                  <dt className="text-small text-muted">Additional Location</dt>
+                  <dt className="text-small text-muted">{plant.locationType === 'garden' ? 'Additional Location' : 'Location Details'}</dt>
                   <dd>{plant.location}</dd>
                 </div>
               )}
