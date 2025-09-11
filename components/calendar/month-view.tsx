@@ -1,7 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import CelebrationBadge, { getMilestone, getWeeklySummary } from './celebrations'
+import { getMilestone, getWeeklySummary } from './celebrations'
+
+interface Milestone {
+  type: string
+  message: string
+  emoji: string
+  subtle?: boolean
+}
 
 interface CalendarEvent {
   id: string
@@ -93,7 +100,7 @@ export default function CalendarMonthView({ date }: { date: Date }) {
   // Check for milestones
   const getDayMilestones = (day: number) => {
     const dayEvents = getEventsForDay(day)
-    const milestones = []
+    const milestones: Milestone[] = []
     
     dayEvents.forEach(event => {
       const milestone = getMilestone(event, events)

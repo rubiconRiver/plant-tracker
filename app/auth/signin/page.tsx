@@ -39,7 +39,7 @@ export default function SignIn() {
         <div className="text-center mb-4">
           <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🌱</div>
           <h1 style={{ marginBottom: '0.5rem' }}>Plant Tracker</h1>
-          <p className="text-muted">Track your garden's journey</p>
+          <p className="text-muted">Track your garden&apos;s journey</p>
         </div>
 
         {/* Sign In Card */}
@@ -110,7 +110,7 @@ export default function SignIn() {
             borderTop: '1px solid var(--card-border)' 
           }}>
             <p className="text-small text-muted text-center">
-              We'll send you a magic link to sign in instantly.
+              We&apos;ll send you a magic link to sign in instantly.
               <br />
               <span style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'block' }}>
                 No password needed!

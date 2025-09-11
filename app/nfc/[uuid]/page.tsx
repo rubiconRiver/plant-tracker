@@ -40,8 +40,8 @@ function UnassignedTagPage({ uuid }: { uuid: string }) {
           }}>
             <li>Copy the UUID above</li>
             <li>Go to any plant page</li>
-            <li>Scroll to "NFC Tag Management"</li>
-            <li>Paste the UUID and click "Link Tag"</li>
+            <li>Scroll to &quot;NFC Tag Management&quot;</li>
+            <li>Paste the UUID and click &quot;Link Tag&quot;</li>
           </ol>
         </article>
       </div>
@@ -57,7 +57,7 @@ function UnknownTagPage({ uuid }: { uuid: string }) {
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✨</div>
           <h1 style={{ marginBottom: '0.5rem' }}>New NFC Tag Detected</h1>
           <p className="text-muted">
-            This tag hasn't been registered yet. Copy the UUID to link it to a plant.
+            This tag hasn&apos;t been registered yet. Copy the UUID to link it to a plant.
           </p>
         </div>
         
@@ -87,8 +87,8 @@ function UnknownTagPage({ uuid }: { uuid: string }) {
           }}>
             <li>Copy the UUID above</li>
             <li>Go to any plant page</li>
-            <li>Scroll to "NFC Tag Management"</li>
-            <li>Paste the UUID and click "Link Tag"</li>
+            <li>Scroll to &quot;NFC Tag Management&quot;</li>
+            <li>Paste the UUID and click &quot;Link Tag&quot;</li>
           </ol>
         </article>
       </div>

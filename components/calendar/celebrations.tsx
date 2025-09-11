@@ -8,7 +8,16 @@ interface Milestone {
 }
 
 // Quiet, dignified celebrations
-export const getMilestone = (event: any, allEvents: any[]): Milestone | null => {
+interface CalendarEvent {
+  id: string
+  type: string
+  date: string | Date
+  plantId?: string
+  plantName?: string
+  status?: string
+}
+
+export const getMilestone = (event: CalendarEvent, allEvents: CalendarEvent[]): Milestone | null => {
   const plantEvents = allEvents.filter(e => e.plantId === event.plantId)
   
   // First planting of the season
@@ -114,7 +123,7 @@ export const getMilestone = (event: any, allEvents: any[]): Milestone | null => 
 }
 
 // Weekly/monthly summaries
-export const getWeeklySummary = (events: any[]) => {
+export const getWeeklySummary = (events: CalendarEvent[]) => {
   const stats = {
     plantings: events.filter(e => e.type === 'planted').length,
     harvests: events.filter(e => e.type === 'harvest').length,

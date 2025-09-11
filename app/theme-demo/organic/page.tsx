@@ -196,7 +196,7 @@ export default function OrganicThemeDemo() {
           <div className="absolute -top-6 -right-6 text-8xl opacity-10 rotate-12">🏆</div>
           <div className="relative">
             <h3 className="text-xl font-black mb-2">🎉 Garden Milestone!</h3>
-            <p className="text-lg italic">"First tomato flowers appearing - harvest season approaches!"</p>
+            <p className="text-lg italic">&quot;First tomato flowers appearing - harvest season approaches!&quot;</p>
             <div className="flex gap-4 mt-4">
               <span className="font-bold">🌱 12 plants growing</span>
               <span className="font-bold">📸 48 photos this month</span>

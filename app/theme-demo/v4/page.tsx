@@ -188,7 +188,7 @@ export default function V4ThemeDemo() {
               0 4px 6px ${palette.border}20
             `
           }}>
-            <h2 className="text-2xl font-bold mb-4">📅 Today's Tasks</h2>
+            <h2 className="text-2xl font-bold mb-4">📅 Today&apos;s Tasks</h2>
             
             <div className="space-y-3">
               <div className="p-3 rounded flex items-center gap-3" style={{

@@ -91,7 +91,7 @@ export default function CalendarWeekView({ date }: { date: Date }) {
     }
     
     fetchEvents()
-  }, [date])
+  }, [date, weekDates])
   
   const today = new Date()
   

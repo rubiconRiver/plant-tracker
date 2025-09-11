@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from 'react'
 
+interface CalendarEvent {
+  id: string
+  type: string
+  date: string | Date
+  plantId?: string
+  plantName?: string
+}
+
 interface MonthData {
   harvests: number
   plantings: number
   photos: number
   waterings: number
-  events: any[]
+  events: CalendarEvent[]
 }
 
 export default function CalendarYearView({ date }: { date: Date }) {
@@ -47,7 +55,7 @@ export default function CalendarYearView({ date }: { date: Date }) {
           }
         }
         
-        data.events?.forEach((event: any) => {
+        data.events?.forEach((event: CalendarEvent) => {
           const eventDate = new Date(event.date)
           const month = eventDate.getMonth()
           

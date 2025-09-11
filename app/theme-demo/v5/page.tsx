@@ -139,7 +139,7 @@ export default function ModernBotanical() {
               backgroundColor: colors.surface,
               border: `1px solid ${colors.border}`
             }}>
-              <h2 className="text-xl font-bold mb-4">Today's Schedule</h2>
+              <h2 className="text-xl font-bold mb-4">Today&apos;s Schedule</h2>
               <div className="space-y-3">
                 {[
                   { time: '9:00 AM', task: 'Water tomatoes and peppers', status: 'completed', icon: '💧' },

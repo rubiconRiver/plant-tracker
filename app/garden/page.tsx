@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function GardenPage() {
   // Mock data for demonstration
   const plants = [
@@ -12,7 +14,7 @@ export default function GardenPage() {
         <div className="container flex justify-between items-center">
           <h1 style={{ margin: 0 }}>🌱 Plant Tracker</h1>
           <div>
-            <a href="/">Home</a>
+            <Link href="/">Home</Link>
             <a href="/garden">Garden</a>
             <a href="/calendar">Calendar</a>
           </div>
@@ -69,7 +71,7 @@ export default function GardenPage() {
           </div>
 
           <div className="card">
-            <h3>Today's Tasks</h3>
+            <h3>Today&apos;s Tasks</h3>
             <div className="flex flex-col gap-2">
               <label className="flex items-center gap-2">
                 <input type="checkbox" />

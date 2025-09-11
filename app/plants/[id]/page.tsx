@@ -39,7 +39,7 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
             <Link href="/" style={{ textDecoration: 'none' }}>
               <span style={{ fontSize: '1.5rem' }}>🌱</span>
             </Link>
-            <a href="/">← Back to Garden</a>
+            <Link href="/">← Back to Garden</Link>
           </div>
           <div className="flex items-center gap-3">
             <Link href={`/plants/${plant.id}/edit`}>

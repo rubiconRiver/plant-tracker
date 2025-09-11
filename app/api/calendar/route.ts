@@ -93,15 +93,14 @@ export async function GET(request: Request) {
           type: 'status',
           plantId: plant.id,
           plantName: plant.name,
-          description: `${plant.name} changed to ${status.toStatus}`,
-          status: status.toStatus
+          description: `${plant.name} changed to ${status.status}`,
+          status: status.status
         })
       })
 
       // Watering reminders (every 3 days for active plants)
       if (plant.status === 'seedling' || plant.status === 'vegetative' || plant.status === 'flowering') {
         const today = new Date()
-        const daysSincePlanted = Math.floor((today.getTime() - plant.plantedDate.getTime()) / (1000 * 60 * 60 * 24))
         
         for (let i = 0; i < 30; i += 3) { // Next 30 days of watering
           const waterDate = new Date()

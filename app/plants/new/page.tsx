@@ -114,7 +114,7 @@ export default function NewPlantPage() {
           <Link href="/" style={{ textDecoration: 'none' }}>
             <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>🌱</span>
           </Link>
-          <a href="/">← Back to Garden</a>
+          <Link href="/">← Back to Garden</Link>
         </div>
       </nav>
 

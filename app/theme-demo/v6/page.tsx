@@ -122,7 +122,7 @@ export default function EarthyMinimal() {
             border: `1px solid ${colors.primary}20`
           }}>
             <h3 className="text-lg mb-4" style={{ color: colors.primary }}>
-              Today's Tasks
+              Today&apos;s Tasks
             </h3>
             <div className="space-y-3">
               <button className="w-full p-3 rounded-xl text-left" style={{

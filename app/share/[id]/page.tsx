@@ -62,7 +62,7 @@ export default async function PublicPlantPage({ params }: { params: Promise<{ id
           marginBottom: '2rem'
         }}>
           <p className="text-small">
-            📱 You're viewing a shared plant. 
+            📱 You&apos;re viewing a shared plant. 
             <Link href="/auth/signin" style={{ marginLeft: '0.5rem', fontWeight: 500 }}>
               Sign in to track your own plants
             </Link>
