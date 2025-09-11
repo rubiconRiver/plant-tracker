@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PlantCard } from '@/components/plants/plant-card'
+import Image from 'next/image'
 import { db } from '@/lib/db'
 import { auth } from '@/auth'
 import { SignInButton } from '@/components/auth/sign-in-button'
@@ -9,13 +9,13 @@ export default async function Home() {
   
   if (!session?.user?.email) {
     return (
-      <div className="min-h-screen bg-yellow-50 flex items-center justify-center">
+      <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-amber-900 mb-4">Plant Tracker</h1>
-          <p className="text-amber-700 mb-8">Sign in to track your plants</p>
+          <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌱 Plant Tracker</h1>
+          <p className="text-muted mb-4">Sign in to track your plants from seed to harvest</p>
           <SignInButton session={null} />
         </div>
-      </div>
+      </main>
     )
   }
   
@@ -53,54 +53,151 @@ export default async function Home() {
   })
 
   return (
-    <div className="min-h-screen bg-yellow-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-amber-900">My Plants</h1>
-          <SignInButton session={session} />
-        </div>
-        
-        <div className="flex justify-between items-center mb-8">
-          <p className="text-amber-700">
-            {session?.user ? `Welcome, ${session.user.email}` : 'Sign in to track your plants'}
-          </p>
-          <div className="flex gap-2">
-            <Link
-              href="/calendar"
-              className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Calendar
-            </Link>
-            <Link
-              href="/plants/new"
-              className="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-700 transition-colors"
-            >
-              Add Plant
-            </Link>
+    <main>
+      <nav>
+        <div className="container flex justify-between items-center">
+          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>🌱 Plant Tracker</h1>
+          <div className="flex items-center gap-3">
+            <a href="/garden">Garden</a>
+            <a href="/calendar">Calendar</a>
+            <a href="/nfc">NFC</a>
+            <SignInButton session={session} />
           </div>
         </div>
+      </nav>
+
+      <div className="container">
+        <header className="mb-4">
+          <h1>Welcome to Your Garden</h1>
+          <p className="text-muted">
+            {session?.user ? `Hello, ${session.user.email}` : 'Track your plants from seed to harvest'}
+          </p>
+        </header>
+
+        <section className="flex gap-2 mb-4">
+          <Link href="/plants/new">
+            <button>+ Add New Plant</button>
+          </Link>
+          <Link href="/calendar">
+            <button className="secondary">View Calendar</button>
+          </Link>
+        </section>
 
         {plants.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-amber-700 mb-4">No plants yet. Start by adding your first plant!</p>
-            <Link
-              href="/plants/new"
-              className="inline-block bg-lime-600 text-white px-6 py-3 rounded-lg hover:bg-lime-700 transition-colors"
-            >
-              Add Your First Plant
+          <section className="text-center" style={{ padding: '4rem 0' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🌱</div>
+            <h2>Start Your Garden</h2>
+            <p className="text-muted mb-3">
+              Add your first plant to begin tracking its growth journey
+            </p>
+            <Link href="/plants/new">
+              <button>Add Your First Plant</button>
             </Link>
-          </div>
+          </section>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plants.map((plant) => (
-              <PlantCard key={plant.id} plant={plant} />
-            ))}
-          </div>
+          <section>
+            <h2 className="mb-3">Your Plants ({plants.length})</h2>
+            <div className="grid grid-3">
+              {plants.map((plant) => (
+                <Link key={plant.id} href={`/plants/${plant.id}`} style={{ textDecoration: 'none' }}>
+                  <article className="animate-grow" style={{ height: '100%', cursor: 'pointer' }}>
+                    {plant.photos?.[0] ? (
+                      <div style={{ 
+                        position: 'relative', 
+                        width: '100%', 
+                        aspectRatio: '1', 
+                        marginBottom: '1rem',
+                        overflow: 'hidden',
+                        borderRadius: '0.5rem'
+                      }}>
+                        <Image
+                          src={plant.photos[0].url}
+                          alt={plant.name}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      </div>
+                    ) : (
+                      <div style={{ 
+                        aspectRatio: '1', 
+                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                        opacity: 0.1,
+                        borderRadius: '0.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginBottom: '1rem'
+                      }}>
+                        <span style={{ fontSize: '3rem', opacity: 1 }}>🌱</span>
+                      </div>
+                    )}
+                    
+                    <h3>{plant.name}</h3>
+                    {plant.species && (
+                      <p className="text-small text-muted">{plant.species}</p>
+                    )}
+                    
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-small">
+                        📅 {new Date(plant.plantedDate).toLocaleDateString()}
+                      </span>
+                      <span className={`badge ${
+                        plant.status === 'seedling' ? 'success' :
+                        plant.status === 'growing' ? 'info' :
+                        plant.status === 'flowering' ? 'warning' :
+                        'muted'
+                      }`}>
+                        {plant.status}
+                      </span>
+                    </div>
+                    
+                    {plant.location && (
+                      <p className="text-small text-muted mt-2">📍 {plant.location}</p>
+                    )}
+                  </article>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
+
+        <section className="mt-4 grid grid-2">
+          <div className="card">
+            <h3>Quick Stats</h3>
+            <div className="grid grid-3 text-center mt-3">
+              <div>
+                <p className="text-large" style={{ color: 'var(--primary)', fontWeight: 600 }}>
+                  {plants.length}
+                </p>
+                <p className="text-small text-muted">Plants</p>
+              </div>
+              <div>
+                <p className="text-large" style={{ color: 'var(--secondary)', fontWeight: 600 }}>
+                  {plants.filter(p => p.photos?.length > 0).length}
+                </p>
+                <p className="text-small text-muted">With Photos</p>
+              </div>
+              <div>
+                <p className="text-large" style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                  {plants.filter(p => p.status === 'growing').length}
+                </p>
+                <p className="text-small text-muted">Growing</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <h3>Recent Activity</h3>
+            <div className="flex flex-col gap-2 mt-3">
+              <p className="text-small">🌱 Added Tomato plant - 2 days ago</p>
+              <p className="text-small">📸 New photo of Basil - 3 days ago</p>
+              <p className="text-small">💧 Watered all plants - 1 week ago</p>
+              <p className="text-small">🌺 Mint started flowering - 2 weeks ago</p>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   )
 }

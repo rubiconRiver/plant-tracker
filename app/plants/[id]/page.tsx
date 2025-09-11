@@ -8,7 +8,6 @@ import NfcTagLinker from '@/components/plants/nfc-tag-linker'
 import PlantJourney from '@/components/plants/plant-journey'
 import LocationDisplay from '@/components/plants/location-display'
 import GrowthTimelapse from '@/components/plants/growth-timelapse'
-import { statusColors, getStatusLabel, getStatusIcon } from '@/lib/plant-status'
 
 export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -29,163 +28,222 @@ export default async function PlantDetailPage({ params }: { params: Promise<{ id
     notFound()
   }
 
-  const plantedDate = new Date(plant.plantedDate).toLocaleDateString()
-  const createdDate = new Date(plant.createdAt).toLocaleDateString()
-  const updatedDate = new Date(plant.updatedAt).toLocaleDateString()
-
+  const plantedDate = new Date(plant.plantedDate)
+  const daysSincePlanted = Math.floor((Date.now() - plantedDate.getTime()) / (1000 * 60 * 60 * 24))
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <Link href="/" className="text-green-600 hover:text-green-700">
-            ← Back to Plants
-          </Link>
-        </div>
-
-        {/* Photo CTA - Prominent at the top */}
-        <div className="mb-6">
-          <PhotoCapture plantId={id} plantName={plant.name} />
-        </div>
-
-        {/* Plant Journey */}
-        <PlantJourney 
-          plantedDate={plant.plantedDate}
-          daysToGermination={plant.daysToGermination}
-          daysToHarvest={plant.daysToHarvest}
-          currentStatus={plant.status}
-          photos={plant.photos} 
-          statusHistory={plant.statusHistory} 
-        />
-
-        {/* Growth Timelapse */}
-        <GrowthTimelapse 
-          photos={plant.photos}
-          plantName={plant.name}
-        />
-
-        {/* Latest Photo Display */}
-        {plant.photos.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-3">Latest Photo</h2>
-            <div className="relative aspect-square w-full max-w-md mx-auto">
-              <Image
-                src={plant.photos[0].url}
-                alt={`${plant.name} photo`}
-                fill
-                className="object-cover rounded-lg"
-                sizes="(max-width: 768px) 100vw, 448px"
-              />
-            </div>
-            <p className="text-sm text-gray-500 mt-2 text-center">
-              Taken {new Date(plant.photos[0].takenAt).toLocaleString()}
-            </p>
-            {plant.photos.length > 1 && (
-              <p className="text-sm text-gray-600 mt-2 text-center">
-                {plant.photos.length - 1} more photo{plant.photos.length > 2 ? 's' : ''} available
-              </p>
-            )}
+    <main>
+      <nav>
+        <div className="container flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Link href="/" style={{ textDecoration: 'none' }}>
+              <span style={{ fontSize: '1.5rem' }}>🌱</span>
+            </Link>
+            <a href="/">← Back to Garden</a>
           </div>
+          <div className="flex items-center gap-3">
+            <Link href={`/plants/${plant.id}/edit`}>
+              <button className="secondary" style={{ padding: '0.5rem 1rem' }}>Edit</button>
+            </Link>
+            <DeletePlantButton plantId={plant.id} plantName={plant.name} />
+          </div>
+        </div>
+      </nav>
+
+      <div className="container">
+        <header className="mb-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 style={{ marginBottom: '0.5rem' }}>{plant.name}</h1>
+              {plant.species && (
+                <p className="text-muted">{plant.species}</p>
+              )}
+            </div>
+            <span className={`badge ${
+              plant.status === 'seedling' ? 'success' :
+              plant.status === 'growing' ? 'info' :
+              plant.status === 'flowering' ? 'warning' :
+              plant.status === 'fruiting' ? 'warning' :
+              plant.status === 'harvested' ? 'muted' :
+              'muted'
+            }`} style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}>
+              {plant.status}
+            </span>
+          </div>
+        </header>
+
+        {/* Photo Section */}
+        <section className="mb-4">
+          <div className="mb-3">
+            <PhotoCapture plantId={id} plantName={plant.name} />
+          </div>
+          
+          {plant.photos.length > 0 && (
+            <>
+              <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                <div style={{ 
+                  position: 'relative', 
+                  width: '100%', 
+                  aspectRatio: '16/9'
+                }}>
+                  <Image
+                    src={plant.photos[0].url}
+                    alt={`Latest photo of ${plant.name}`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 100vw, 800px"
+                  />
+                </div>
+                <div style={{ padding: '1rem' }}>
+                  <p className="text-small text-muted">
+                    Latest photo taken {new Date(plant.photos[0].takenAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {plant.photos.length > 1 && (
+                <div className="mt-3">
+                  <GrowthTimelapse photos={plant.photos} plantName={plant.name} />
+                </div>
+              )}
+            </>
+          )}
+        </section>
+
+        {/* Journey Timeline */}
+        <section className="mb-4">
+          <PlantJourney 
+            plantedDate={plant.plantedDate}
+            daysToGermination={plant.daysToGermination}
+            daysToHarvest={plant.daysToHarvest}
+            currentStatus={plant.status}
+            photos={plant.photos} 
+            statusHistory={plant.statusHistory} 
+          />
+        </section>
+
+        {/* Plant Information Grid */}
+        <section className="grid grid-2 gap-3 mb-4">
+          <article>
+            <h3>Plant Details</h3>
+            <dl style={{ display: 'grid', gap: '1rem' }}>
+              <div>
+                <dt className="text-small text-muted">Planted</dt>
+                <dd>{plantedDate.toLocaleDateString()} ({daysSincePlanted} days ago)</dd>
+              </div>
+              
+              {plant.garden && plant.gardenRow !== null && plant.gardenColumn !== null && (
+                <div>
+                  <dt className="text-small text-muted">Garden Position</dt>
+                  <dd>
+                    <LocationDisplay
+                      gardenName={plant.garden.name}
+                      row={plant.gardenRow}
+                      column={plant.gardenColumn}
+                      totalRows={plant.garden.rows}
+                      totalColumns={plant.garden.columnsPerRow}
+                    />
+                  </dd>
+                </div>
+              )}
+              
+              {plant.location && (
+                <div>
+                  <dt className="text-small text-muted">Additional Location</dt>
+                  <dd>{plant.location}</dd>
+                </div>
+              )}
+
+              <div>
+                <dt className="text-small text-muted">Total Photos</dt>
+                <dd>{plant.photos.length} photo{plant.photos.length !== 1 ? 's' : ''}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article>
+            <h3>Care Information</h3>
+            <dl style={{ display: 'grid', gap: '1rem' }}>
+              {plant.daysToGermination && (
+                <div>
+                  <dt className="text-small text-muted">Days to Germination</dt>
+                  <dd>{plant.daysToGermination} days</dd>
+                </div>
+              )}
+              
+              {plant.daysToHarvest && (
+                <div>
+                  <dt className="text-small text-muted">Days to Harvest</dt>
+                  <dd>{plant.daysToHarvest} days</dd>
+                </div>
+              )}
+
+              <div>
+                <dt className="text-small text-muted">Next Watering</dt>
+                <dd>Tomorrow</dd>
+              </div>
+
+              <div>
+                <dt className="text-small text-muted">Last Updated</dt>
+                <dd>{new Date(plant.updatedAt).toLocaleDateString()}</dd>
+              </div>
+            </dl>
+          </article>
+        </section>
+
+        {/* Notes Section */}
+        {plant.notes && (
+          <section className="mb-4">
+            <article>
+              <h3>Notes</h3>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{plant.notes}</p>
+            </article>
+          </section>
         )}
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{plant.name}</h1>
-              <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${statusColors[plant.status] || 'bg-gray-100 text-gray-800'}`}>
-                {getStatusIcon(plant.status)} {getStatusLabel(plant.status)}
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <Link
-                href={`/plants/${plant.id}/edit`}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Edit
-              </Link>
-              <DeletePlantButton plantId={plant.id} plantName={plant.name} />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-700 mb-3">Plant Information</h2>
-              <dl className="space-y-2">
-                {plant.species && (
-                  <>
-                    <dt className="text-sm font-medium text-gray-500">Species/Variety</dt>
-                    <dd className="text-gray-900 mb-3">{plant.species}</dd>
-                  </>
-                )}
-                {plant.garden && plant.gardenRow !== null && plant.gardenColumn !== null && (
-                  <>
-                    <dt className="text-sm font-medium text-gray-500">Garden Position</dt>
-                    <dd className="text-gray-900 mb-3">
-                      <LocationDisplay
-                        gardenName={plant.garden.name}
-                        row={plant.gardenRow}
-                        column={plant.gardenColumn}
-                        totalRows={plant.garden.rows}
-                        totalColumns={plant.garden.columnsPerRow}
-                      />
-                    </dd>
-                  </>
-                )}
-                {plant.location && (
-                  <>
-                    <dt className="text-sm font-medium text-gray-500">Notes/Location</dt>
-                    <dd className="text-gray-900 mb-3">{plant.location}</dd>
-                  </>
-                )}
-                <dt className="text-sm font-medium text-gray-500">Planted Date</dt>
-                <dd className="text-gray-900 mb-3">{plantedDate}</dd>
-                <dt className="text-sm font-medium text-gray-500">Total Photos</dt>
-                <dd className="text-gray-900">{plant.photos.length}</dd>
-              </dl>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold text-gray-700 mb-3">System Information</h2>
-              <dl className="space-y-2">
-                <dt className="text-sm font-medium text-gray-500">Created</dt>
-                <dd className="text-gray-900 mb-3">{createdDate}</dd>
-                <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
-                <dd className="text-gray-900">{updatedDate}</dd>
-              </dl>
-            </div>
-          </div>
-
-          {plant.notes && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-700 mb-3">Notes</h2>
-              <p className="text-gray-600 whitespace-pre-wrap">{plant.notes}</p>
-            </div>
-          )}
-
-          {/* Photo Gallery */}
-          {plant.photos.length > 1 && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-700 mb-3">All Photos</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {plant.photos.map((photo) => (
-                  <div key={photo.id} className="relative aspect-square">
+        {/* Photo Gallery */}
+        {plant.photos.length > 1 && (
+          <section className="mb-4">
+            <h2>Photo History</h2>
+            <div className="grid grid-3">
+              {plant.photos.map((photo, index) => (
+                <div key={photo.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                  <div style={{ 
+                    position: 'relative', 
+                    width: '100%', 
+                    aspectRatio: '1'
+                  }}>
                     <Image
                       src={photo.url}
-                      alt={`${plant.name} photo`}
+                      alt={`${plant.name} photo ${index + 1}`}
                       fill
-                      className="object-cover rounded-lg"
+                      style={{ objectFit: 'cover' }}
                       sizes="(max-width: 768px) 50vw, 33vw"
                     />
                   </div>
-                ))}
-              </div>
+                  <div style={{ padding: '0.5rem' }}>
+                    <p className="text-small text-muted text-center">
+                      {new Date(photo.takenAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+          </section>
+        )}
 
-          {/* NFC Tag Management - At the very bottom */}
+        {/* NFC Tag Section */}
+        <section>
           <NfcTagLinker plantId={id} plantName={plant.name} />
-        </div>
+        </section>
+
+        {/* Quick Actions */}
+        <section className="mt-4 flex gap-2">
+          <button>💧 Log Watering</button>
+          <button className="secondary">✂️ Log Pruning</button>
+          <button className="secondary">🌱 Update Status</button>
+        </section>
       </div>
-    </div>
+    </main>
   )
 }
