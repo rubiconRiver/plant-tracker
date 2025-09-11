@@ -26,16 +26,16 @@ export function PlantCard({ plant }: PlantCardProps) {
   const latestPhoto = plant.photos?.[0]
   
   const statusColors: Record<string, string> = {
-    seedling: 'bg-green-100 text-green-800',
+    seedling: 'bg-lime-100 text-lime-800',
     growing: 'bg-blue-100 text-blue-800',
-    mature: 'bg-purple-100 text-purple-800',
-    harvested: 'bg-yellow-100 text-yellow-800',
+    mature: 'bg-lime-100 text-lime-800',
+    harvested: 'bg-orange-100 text-orange-800',
     dead: 'bg-gray-100 text-gray-800'
   }
   
   return (
     <Link href={`/plants/${plant.id}`}>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow overflow-hidden border border-amber-200">
         {latestPhoto ? (
           <div className="relative aspect-square w-full">
             <Image
@@ -50,29 +50,29 @@ export function PlantCard({ plant }: PlantCardProps) {
             </div>
           </div>
         ) : (
-          <div className="aspect-square w-full bg-gray-100 flex items-center justify-center">
+          <div className="aspect-square w-full bg-amber-50 flex items-center justify-center">
             <div className="text-center">
               <span className="text-6xl">🌱</span>
-              <h3 className="text-xl font-semibold text-gray-900 mt-2">{plant.name}</h3>
+              <h3 className="text-xl font-semibold text-amber-900 mt-2">{plant.name}</h3>
             </div>
           </div>
         )}
         
         <div className="p-4">
           {plant.species && (
-            <p className="text-sm text-gray-600 mb-1">{plant.species}</p>
+            <p className="text-sm text-amber-700 mb-1">{plant.species}</p>
           )}
           {plant.location && (
-            <p className="text-sm text-gray-600 mb-2">📍 {plant.location}</p>
+            <p className="text-sm text-amber-700 mb-2">📍 {plant.location}</p>
           )}
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-500">Planted: {plantedDate}</p>
+            <p className="text-sm text-amber-600">Planted: {plantedDate}</p>
             <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${statusColors[plant.status] || 'bg-gray-100 text-gray-800'}`}>
               {plant.status}
             </span>
           </div>
           {latestPhoto && (
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-amber-500 mt-2">
               📸 {new Date(latestPhoto.takenAt).toLocaleDateString()}
             </p>
           )}
