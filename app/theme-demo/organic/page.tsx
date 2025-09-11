@@ -2,50 +2,62 @@
 
 import { useState } from 'react'
 
-// More organic, earthy palettes
+// Version 1 - More mature, sophisticated green
 const palettes = {
-  'Garden Party': {
+  'v1': {
     light: {
-      primary: '#10b981',
-      secondary: '#3b82f6', 
-      accent: '#f59e0b',
-      background: '#f4f1e8',  // Warm cream/beige - like parchment
-      foreground: '#1a1a0a',
-      card: '#fefdf8',       // Slightly warmer white
-      muted: '#8b7355',      // Earthy brown
+      primary: '#059669',     // Emerald-600 - deeper, more sophisticated
+      secondary: '#0891b2',   // Cyan-600 - complementary water blue
+      accent: '#ea580c',      // Orange-600 - earthy harvest orange
+      background: '#f7f5f2',  // Warm off-white with hint of grey
+      foreground: '#171717',
+      card: '#ffffff',
+      muted: '#737373',
     },
     dark: {
-      primary: '#34d399',
-      secondary: '#60a5fa',
-      accent: '#fbbf24',
-      background: '#1a1815',  // Dark brown/green - like rich soil
-      foreground: '#f5f2e8',
-      card: '#252320',       // Dark earth
-      muted: '#7c6f5d',      // Muted brown
+      primary: '#10b981',     // Emerald-500 - brighter in dark
+      secondary: '#06b6d4',   // Cyan-500
+      accent: '#fb923c',      // Orange-400
+      background: '#18181b',  // Neutral dark
+      foreground: '#f5f5f5',
+      card: '#27272a',
+      muted: '#71717a',
     }
   }
 }
 
 export default function OrganicThemeDemo() {
   const [isDark, setIsDark] = useState(false)
-  const palette = palettes['Garden Party'][isDark ? 'dark' : 'light']
+  const palette = palettes['v1'][isDark ? 'dark' : 'light']
 
   return (
     <div style={{ 
       backgroundColor: palette.background, 
       color: palette.foreground,
       minHeight: '100vh',
-      // Organic texture - like paper or canvas
-      backgroundImage: isDark 
-        ? `radial-gradient(circle at 20% 80%, #34d39910, transparent 50%),
-           radial-gradient(circle at 80% 20%, #60a5fa08, transparent 50%),
-           radial-gradient(circle at 40% 40%, #fbbf2405, transparent 50%)`
-        : `radial-gradient(circle at 20% 80%, #10b98110, transparent 50%),
-           radial-gradient(circle at 80% 20%, #3b82f608, transparent 50%),
-           radial-gradient(circle at 40% 40%, #f59e0b05, transparent 50%)`
+      // Thick journal lines with texture
+      backgroundImage: !isDark ? `
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 32px,
+          ${palette.primary}15 32px,
+          ${palette.primary}15 34px
+        ),
+        radial-gradient(circle at 20% 80%, ${palette.primary}08, transparent 50%),
+        radial-gradient(circle at 80% 20%, ${palette.secondary}05, transparent 50%)
+      ` : `
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 32px,
+          ${palette.primary}10 32px,
+          ${palette.primary}10 33px
+        )
+      `
     }}>
       <div className="max-w-6xl mx-auto p-8">
-        {/* Playful Header */}
+        {/* Header with Version */}
         <div className="mb-8 relative">
           <div className="absolute -top-2 -left-2 text-6xl opacity-20 rotate-12">🌱</div>
           <h1 className="text-4xl font-black mb-4 relative">
@@ -56,7 +68,7 @@ export default function OrganicThemeDemo() {
                 color: '#ffffff',
                 boxShadow: `4px 4px 0 ${palette.primary}40`
               }}>
-              Theme Explorer
+              v1
             </span>
           </h1>
 
