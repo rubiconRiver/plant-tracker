@@ -64,12 +64,23 @@ export default async function Home() {
           <p className="text-gray-600">
             {session?.user ? `Welcome, ${session.user.email}` : 'Sign in to track your plants'}
           </p>
-          <Link
-            href="/plants/new"
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Add Plant
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href="/calendar"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Calendar
+            </Link>
+            <Link
+              href="/plants/new"
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Add Plant
+            </Link>
+          </div>
         </div>
 
         {plants.length === 0 ? (

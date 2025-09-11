@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import CelebrationBadge, { getMilestone, getWeeklySummary } from './celebrations'
 
 interface CalendarEvent {
   id: string
@@ -89,15 +90,53 @@ export default function CalendarMonthView({ date }: { date: Date }) {
     return events.filter(event => event.date === dateStr)
   }
   
+  // Check for milestones
+  const getDayMilestones = (day: number) => {
+    const dayEvents = getEventsForDay(day)
+    const milestones = []
+    
+    dayEvents.forEach(event => {
+      const milestone = getMilestone(event, events)
+      if (milestone) {
+        milestones.push(milestone)
+      }
+    })
+    
+    return milestones
+  }
+  
   // Calculate stats
   const waterCount = events.filter(e => e.type === 'water').length
   const harvestCount = events.filter(e => e.type === 'harvest').length
   const photoCount = events.filter(e => e.type === 'photo' || e.type === 'photo-reminder').length
   const plantedCount = events.filter(e => e.type === 'planted').length
+  
+  // Get monthly achievements
+  const monthlyAchievements = getWeeklySummary(events)
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-      {/* Day Headers */}
+    <div className="space-y-4">
+      {/* Monthly Achievements - Subtle celebration */}
+      {!loading && monthlyAchievements.length > 0 && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🌿</span>
+            <div>
+              <p className="text-sm font-medium text-green-800 italic">
+                {monthlyAchievements[0].message}
+              </p>
+              {monthlyAchievements.length > 1 && (
+                <p className="text-xs text-green-600 mt-1">
+                  + {monthlyAchievements.length - 1} more achievement{monthlyAchievements.length > 2 ? 's' : ''}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+        {/* Day Headers */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div key={day} className="text-center text-xs sm:text-sm font-semibold text-gray-900 py-2">
@@ -110,7 +149,9 @@ export default function CalendarMonthView({ date }: { date: Date }) {
       <div className="grid grid-cols-7 gap-1">
         {calendarDays.map((day, index) => {
           const events = day ? getEventsForDay(day) : []
+          const milestones = day ? getDayMilestones(day) : []
           const hasMany = events.length > 2
+          const hasMilestone = milestones.length > 0
           
           return (
             <div
@@ -119,13 +160,23 @@ export default function CalendarMonthView({ date }: { date: Date }) {
                 min-h-[60px] sm:min-h-[80px] lg:min-h-[100px] p-1 sm:p-2
                 ${day ? 'bg-gray-50 hover:bg-green-50' : ''}
                 ${isToday(day || 0) ? 'bg-green-100 ring-2 ring-green-500' : ''}
+                ${hasMilestone ? 'bg-gradient-to-br from-green-50 to-emerald-50' : ''}
                 rounded-lg transition-colors cursor-pointer relative
               `}
             >
               {day && (
                 <>
-                  <div className={`text-xs sm:text-sm font-medium ${isToday(day) ? 'text-green-700' : 'text-gray-900'}`}>
-                    {day}
+                  <div className="flex justify-between items-start">
+                    <div className={`text-xs sm:text-sm font-medium ${isToday(day) ? 'text-green-700' : 'text-gray-900'}`}>
+                      {day}
+                    </div>
+                    {hasMilestone && (
+                      <div className="hidden sm:block">
+                        <span className="text-xs" title={milestones[0].message}>
+                          {milestones[0].emoji}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Events */}
@@ -191,6 +242,7 @@ export default function CalendarMonthView({ date }: { date: Date }) {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
