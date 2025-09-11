@@ -25,59 +25,105 @@ export function PlantCard({ plant }: PlantCardProps) {
   const plantedDate = new Date(plant.plantedDate).toLocaleDateString()
   const latestPhoto = plant.photos?.[0]
   
-  const statusColors: Record<string, string> = {
-    seedling: 'bg-lime-100 text-lime-800',
-    growing: 'bg-blue-100 text-blue-800',
-    mature: 'bg-lime-100 text-lime-800',
-    harvested: 'bg-orange-100 text-orange-800',
-    dead: 'bg-gray-100 text-gray-800'
+  const getStatusClass = (status: string) => {
+    switch(status) {
+      case 'seedling':
+        return 'success'
+      case 'growing':
+        return 'info'
+      case 'flowering':
+      case 'fruiting':
+        return 'warning'
+      case 'harvested':
+      case 'dead':
+        return 'muted'
+      default:
+        return ''
+    }
   }
   
   return (
-    <Link href={`/plants/${plant.id}`}>
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow overflow-hidden border border-amber-200">
+    <Link href={`/plants/${plant.id}`} style={{ textDecoration: 'none' }}>
+      <article className="animate-grow" style={{ height: '100%', cursor: 'pointer' }}>
         {latestPhoto ? (
-          <div className="relative aspect-square w-full">
+          <div style={{ 
+            position: 'relative', 
+            width: '100%', 
+            aspectRatio: '1', 
+            marginBottom: '1rem',
+            overflow: 'hidden',
+            borderRadius: '0.5rem'
+          }}>
             <Image
               src={latestPhoto.url}
               alt={plant.name}
               fill
-              className="object-cover"
+              style={{ objectFit: 'cover' }}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-              <h3 className="text-xl font-semibold text-white">{plant.name}</h3>
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
+              padding: '1rem',
+            }}>
+              <h3 style={{ color: 'white', marginBottom: 0 }}>{plant.name}</h3>
             </div>
           </div>
         ) : (
-          <div className="aspect-square w-full bg-amber-50 flex items-center justify-center">
-            <div className="text-center">
-              <span className="text-6xl">🌱</span>
-              <h3 className="text-xl font-semibold text-amber-900 mt-2">{plant.name}</h3>
-            </div>
+          <div style={{ 
+            aspectRatio: '1', 
+            background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+            opacity: 0.1,
+            borderRadius: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '1rem',
+            position: 'relative'
+          }}>
+            <span style={{ fontSize: '4rem', position: 'absolute', opacity: 0.5 }}>🌱</span>
+            <h3 style={{ 
+              position: 'absolute',
+              bottom: '1rem',
+              left: '1rem',
+              margin: 0,
+              color: 'var(--foreground)'
+            }}>{plant.name}</h3>
           </div>
         )}
         
-        <div className="p-4">
+        <div>
           {plant.species && (
-            <p className="text-sm text-amber-700 mb-1">{plant.species}</p>
+            <p className="text-small text-muted" style={{ marginBottom: '0.5rem' }}>
+              {plant.species}
+            </p>
           )}
+          
           {plant.location && (
-            <p className="text-sm text-amber-700 mb-2">📍 {plant.location}</p>
+            <p className="text-small text-muted" style={{ marginBottom: '0.5rem' }}>
+              📍 {plant.location}
+            </p>
           )}
+          
           <div className="flex justify-between items-center">
-            <p className="text-sm text-amber-600">Planted: {plantedDate}</p>
-            <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${statusColors[plant.status] || 'bg-gray-100 text-gray-800'}`}>
+            <span className="text-small text-muted">
+              Planted: {plantedDate}
+            </span>
+            <span className={`badge ${getStatusClass(plant.status)}`}>
               {plant.status}
             </span>
           </div>
+          
           {latestPhoto && (
-            <p className="text-xs text-amber-500 mt-2">
+            <p className="text-small text-muted" style={{ marginTop: '0.5rem', opacity: 0.7 }}>
               📸 {new Date(latestPhoto.takenAt).toLocaleDateString()}
             </p>
           )}
         </div>
-      </div>
+      </article>
     </Link>
   )
 }

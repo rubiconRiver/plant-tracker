@@ -58,9 +58,7 @@ export default async function Home() {
         <div className="container flex justify-between items-center">
           <h1 style={{ margin: 0, fontSize: '1.5rem' }}>🌱 Plant Tracker</h1>
           <div className="flex items-center gap-3">
-            <a href="/garden">Garden</a>
             <a href="/calendar">Calendar</a>
-            <a href="/nfc">NFC</a>
             <SignInButton session={session} />
           </div>
         </div>

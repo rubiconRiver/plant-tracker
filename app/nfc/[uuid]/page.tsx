@@ -4,63 +4,95 @@ import CopyUuidButton from './copy-uuid-button'
 
 function UnassignedTagPage({ uuid }: { uuid: string }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="text-center max-w-md space-y-6">
-        <h1 className="text-2xl font-bold">Unassigned NFC Tag</h1>
-        <p className="text-gray-600">
-          This tag is registered but not linked to a plant yet.
-        </p>
-        
-        <div className="bg-white rounded-lg p-4 space-y-3">
-          <p className="text-sm text-gray-500">Tag UUID:</p>
-          <p className="font-mono text-xs bg-gray-100 text-black p-2 rounded break-all">
-            {uuid}
+    <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+      <div style={{ width: '100%', maxWidth: '400px', padding: '1rem' }}>
+        <div className="text-center mb-4">
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏷️</div>
+          <h1 style={{ marginBottom: '0.5rem' }}>Unassigned NFC Tag</h1>
+          <p className="text-muted">
+            This tag is registered but not linked to a plant yet.
           </p>
-          <CopyUuidButton uuid={uuid} />
         </div>
         
-        <div className="text-sm text-gray-600 space-y-2">
-          <p className="font-semibold">How to link this tag:</p>
-          <ol className="list-decimal list-inside text-left space-y-1">
+        <article style={{ marginBottom: '1.5rem' }}>
+          <p className="text-small text-muted" style={{ marginBottom: '0.5rem' }}>Tag UUID:</p>
+          <div style={{ 
+            fontFamily: 'monospace',
+            fontSize: '0.75rem',
+            background: 'var(--background)',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            wordBreak: 'break-all',
+            marginBottom: '1rem'
+          }}>
+            {uuid}
+          </div>
+          <CopyUuidButton uuid={uuid} />
+        </article>
+        
+        <article>
+          <h3 style={{ marginBottom: '1rem' }}>How to link this tag:</h3>
+          <ol style={{ 
+            paddingLeft: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem'
+          }}>
             <li>Copy the UUID above</li>
             <li>Go to any plant page</li>
-            <li>Scroll to &quot;NFC Tag Management&quot;</li>
-            <li>Paste the UUID and click &quot;Link Tag&quot;</li>
+            <li>Scroll to "NFC Tag Management"</li>
+            <li>Paste the UUID and click "Link Tag"</li>
           </ol>
-        </div>
+        </article>
       </div>
-    </div>
+    </main>
   )
 }
 
 function UnknownTagPage({ uuid }: { uuid: string }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="text-center max-w-md space-y-6">
-        <h1 className="text-2xl font-bold">New NFC Tag Detected</h1>
-        <p className="text-gray-600">
-          This tag hasn&apos;t been registered yet. Copy the UUID to link it to a plant.
-        </p>
-        
-        <div className="bg-white rounded-lg p-4 space-y-3">
-          <p className="text-sm text-gray-500">Tag UUID:</p>
-          <p className="font-mono text-xs bg-gray-100 text-black p-2 rounded break-all">
-            {uuid}
+    <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+      <div style={{ width: '100%', maxWidth: '400px', padding: '1rem' }}>
+        <div className="text-center mb-4">
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✨</div>
+          <h1 style={{ marginBottom: '0.5rem' }}>New NFC Tag Detected</h1>
+          <p className="text-muted">
+            This tag hasn't been registered yet. Copy the UUID to link it to a plant.
           </p>
-          <CopyUuidButton uuid={uuid} />
         </div>
         
-        <div className="text-sm text-gray-600 space-y-2">
-          <p className="font-semibold">How to use this tag:</p>
-          <ol className="list-decimal list-inside text-left space-y-1">
+        <article style={{ marginBottom: '1.5rem' }}>
+          <p className="text-small text-muted" style={{ marginBottom: '0.5rem' }}>Tag UUID:</p>
+          <div style={{ 
+            fontFamily: 'monospace',
+            fontSize: '0.75rem',
+            background: 'var(--background)',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            wordBreak: 'break-all',
+            marginBottom: '1rem'
+          }}>
+            {uuid}
+          </div>
+          <CopyUuidButton uuid={uuid} />
+        </article>
+        
+        <article>
+          <h3 style={{ marginBottom: '1rem' }}>How to use this tag:</h3>
+          <ol style={{ 
+            paddingLeft: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem'
+          }}>
             <li>Copy the UUID above</li>
             <li>Go to any plant page</li>
-            <li>Scroll to &quot;NFC Tag Management&quot;</li>
-            <li>Paste the UUID and click &quot;Link Tag&quot;</li>
+            <li>Scroll to "NFC Tag Management"</li>
+            <li>Paste the UUID and click "Link Tag"</li>
           </ol>
-        </div>
+        </article>
       </div>
-    </div>
+    </main>
   )
 }
 

@@ -33,24 +33,22 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <main className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
+      <div style={{ width: '100%', maxWidth: '400px', padding: '1rem' }}>
         {/* Logo/Branding Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-lg mb-4">
-            <span className="text-4xl">🌱</span>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Plant Tracker</h1>
-          <p className="text-gray-600 mt-2">Track your garden&apos;s journey</p>
+        <div className="text-center mb-4">
+          <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🌱</div>
+          <h1 style={{ marginBottom: '0.5rem' }}>Plant Tracker</h1>
+          <p className="text-muted">Track your garden's journey</p>
         </div>
 
         {/* Sign In Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Welcome back</h2>
+        <article>
+          <h2 style={{ marginBottom: '1.5rem' }}>Welcome back</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
                 Email Address
               </label>
               <input
@@ -60,13 +58,20 @@ export default function SignIn() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                 disabled={loading}
+                style={{ opacity: loading ? 0.5 : 1 }}
               />
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div style={{ 
+                background: 'rgba(220, 38, 38, 0.1)', 
+                border: '1px solid rgba(220, 38, 38, 0.3)',
+                color: 'var(--destructive)',
+                padding: '0.75rem',
+                borderRadius: '0.5rem',
+                fontSize: '0.875rem'
+              }}>
                 {error}
               </div>
             )}
@@ -74,13 +79,22 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              style={{ 
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? 'not-allowed' : 'pointer'
+              }}
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg 
+                    className="animate-spin" 
+                    style={{ marginRight: '0.5rem', width: '1.25rem', height: '1.25rem' }}
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                  >
+                    <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   Sending magic link...
                 </span>
@@ -90,28 +104,32 @@ export default function SignIn() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600 text-center">
-              We&apos;ll send you a magic link to sign in instantly.
+          <div style={{ 
+            marginTop: '1.5rem', 
+            paddingTop: '1.5rem', 
+            borderTop: '1px solid var(--card-border)' 
+          }}>
+            <p className="text-small text-muted text-center">
+              We'll send you a magic link to sign in instantly.
               <br />
-              <span className="text-xs text-gray-500 mt-2 block">
+              <span style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'block' }}>
                 No password needed!
               </span>
             </p>
           </div>
-        </div>
+        </article>
 
         {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-600">
+        <div className="text-center mt-4">
+          <p className="text-small text-muted">
             New to Plant Tracker?
             <br />
-            <span className="text-gray-700 font-medium">
+            <span style={{ fontWeight: 500, color: 'var(--foreground)' }}>
               Enter your email above to get started
             </span>
           </p>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
