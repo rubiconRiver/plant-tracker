@@ -2,6 +2,8 @@
 
 A personal plant tracking application for managing plants from seed to maturity, with NFC tag support for physical labeling.
 
+Last updated: 2025-01-11
+
 ## Features
 
 - **Plant Management**: Track plants through their entire lifecycle (seed → sprouted → seedling → growing → mature → harvest)
