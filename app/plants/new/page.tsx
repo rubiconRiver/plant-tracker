@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PlantAutocomplete from '@/components/plants/plant-autocomplete'
@@ -10,7 +10,7 @@ import { getRandomPlantName } from '@/lib/plant-names'
 import { plantStatuses } from '@/lib/plant-status'
 import { locationTypes } from '@/lib/location-types'
 
-export default function NewPlantPage() {
+function NewPlantForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const nfcUuid = searchParams.get('nfcUuid')
@@ -378,5 +378,13 @@ export default function NewPlantPage() {
         </form>
       </div>
     </main>
+  )
+}
+
+export default function NewPlantPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewPlantForm />
+    </Suspense>
   )
 }
