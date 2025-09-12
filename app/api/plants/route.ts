@@ -66,6 +66,8 @@ export async function POST(request: NextRequest) {
         name: body.name,
         species: body.species || null,
         location: body.location || null,
+        locationType: body.locationType || null,
+        quantity: body.quantity || 1,
         gardenId: body.gardenId || null,
         gardenRow: body.gardenRow !== undefined ? body.gardenRow : null,
         gardenColumn: body.gardenColumn !== undefined ? body.gardenColumn : null,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PlantAutocomplete from '@/components/plants/plant-autocomplete'
 import LocationPicker from '@/components/gardens/location-picker'
@@ -12,6 +12,8 @@ import { locationTypes } from '@/lib/location-types'
 
 export default function NewPlantPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const nfcUuid = searchParams.get('nfcUuid')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedPlant, setSelectedPlant] = useState<PlantInfo | null>(null)
   const [plantName, setPlantName] = useState('')
@@ -95,7 +97,21 @@ export default function NewPlantPage() {
       })
 
       if (response.ok) {
-        router.push('/')
+        const plant = await response.json()
+        
+        // If we have an NFC UUID, link it to the new plant
+        if (nfcUuid) {
+          await fetch('/api/nfc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uuid: nfcUuid,
+              plantId: plant.id
+            })
+          })
+        }
+        
+        router.push(`/plants/${plant.id}`)
         router.refresh()
       } else {
         alert('Failed to create plant')
@@ -122,6 +138,27 @@ export default function NewPlantPage() {
         <header className="mb-4">
           <h1>Add New Plant</h1>
         </header>
+
+        {nfcUuid && (
+          <div style={{ 
+            background: 'rgba(59, 130, 246, 0.1)', 
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '0.5rem',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem'
+          }}>
+            <span style={{ fontSize: '1.5rem' }}>🏷️</span>
+            <div>
+              <p style={{ margin: 0, fontWeight: 500 }}>NFC Tag Ready</p>
+              <p className="text-small text-muted" style={{ margin: 0 }}>
+                This plant will be linked to tag: {nfcUuid.slice(0, 8)}...
+              </p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Species/Variety Autocomplete */}

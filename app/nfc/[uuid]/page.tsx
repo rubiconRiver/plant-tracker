@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { db } from '@/lib/db'
 import CopyUuidButton from './copy-uuid-button'
 
@@ -27,11 +28,18 @@ function UnassignedTagPage({ uuid }: { uuid: string }) {
           }}>
             {uuid}
           </div>
-          <CopyUuidButton uuid={uuid} />
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <CopyUuidButton uuid={uuid} />
+            <Link href={`/plants/new?nfcUuid=${uuid}`} style={{ flex: 1 }}>
+              <button className="primary" style={{ width: '100%' }}>
+                🌱 Create Plant
+              </button>
+            </Link>
+          </div>
         </article>
         
         <article>
-          <h3 style={{ marginBottom: '1rem' }}>How to link this tag:</h3>
+          <h3 style={{ marginBottom: '1rem' }}>Or manually link to existing plant:</h3>
           <ol style={{ 
             paddingLeft: '1.5rem',
             display: 'flex',
@@ -74,11 +82,18 @@ function UnknownTagPage({ uuid }: { uuid: string }) {
           }}>
             {uuid}
           </div>
-          <CopyUuidButton uuid={uuid} />
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <CopyUuidButton uuid={uuid} />
+            <Link href={`/plants/new?nfcUuid=${uuid}`} style={{ flex: 1 }}>
+              <button className="primary" style={{ width: '100%' }}>
+                🌱 Create Plant
+              </button>
+            </Link>
+          </div>
         </article>
         
         <article>
-          <h3 style={{ marginBottom: '1rem' }}>How to use this tag:</h3>
+          <h3 style={{ marginBottom: '1rem' }}>Or manually link to existing plant:</h3>
           <ol style={{ 
             paddingLeft: '1.5rem',
             display: 'flex',
